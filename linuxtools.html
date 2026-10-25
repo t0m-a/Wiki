@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <title>Wiki - Linux & Unix Tools</title>
-    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">
+    <LINK REL=StyleSheet HREF="style.css?v=3" TYPE="text/css">
     <meta charset="UTF-8">
     <meta name="description" content="Wiki Technical Documentation">
     <meta name="keywords" content="linux system administration,unix system administration,linux sysadmin,unix sysadmin,wiki linux, 
@@ -21,7 +21,12 @@
 <body>
 <nav id="navbar">
         <header class="header-title">Technical Documentation</header>
-        <ul>
+        <button type="button" class="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false" onclick="this.parentElement.classList.toggle('nav-open'); this.setAttribute('aria-expanded', this.parentElement.classList.contains('nav-open'));">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <ul onclick="if(event.target.tagName==='A'){this.parentElement.classList.remove('nav-open'); this.parentElement.querySelector('.hamburger-btn').setAttribute('aria-expanded','false');}">
           <li><a href="index.html#Introduction" class="nav-link" >Introduction</a></li>
           <li><a href="bash.html#Bash_and_Shellscript" class="nav-link">Bash and Shellscript</a></li>
           <li><a href="linuxtools.html#Linux_and_Unix_Tools" class="nav-link">Linux and Unix Tools</a></li>

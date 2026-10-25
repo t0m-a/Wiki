@@ -60,6 +60,9 @@ header {
 .header-title {
   color: #4d4e53;
 }
+.hamburger-btn {
+  display: none;
+}
 #main-doc header {
     text-align: left;
     margin: 0px;
@@ -140,39 +143,124 @@ body footer {
 .read-more-button:hover {
     background: #1badd6 !important;
 }
+.highlight-text {
+    border: solid 1px;
+    border-color: #9999dd;
+    padding: 1px 6px;
+    background: linear-gradient(90deg, #9999dd, #99bbdd);
+    color: white !important;
+}
 /* Responsive Design for Mobile Devices: phones and Tablets.
    800px used to pass freeCodeCamp Tests, but 960px would be better.
 */
 @media only screen and (max-width: 800px) {
-    #navbar ul {
-      border: 0px solid;
-      height: 207px;
-    }
     #navbar {
-      background-color: white;
-      position: absolute;
+      background-color: rgba(250, 250, 250, 0.5);
+      -webkit-backdrop-filter: blur(10px) saturate(150%);
+      backdrop-filter: blur(10px) saturate(150%);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+      position: fixed;
       top: 0;
+      left: 0;
       padding: 0;
       margin: 0;
       width: 100%;
-      max-height: 275px;
+      height: auto;
+      max-height: none;
       border: none;
-      z-index: 1;
-      border-bottom: 1px solid;
-    }
-    #navbar li {
-      color: #4d4e53;
-    }
-    #navbar a {
-      color: #4d4e53;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(77, 78, 83, 0.3);
     }
     .header-title {
-      color: #4d4e53;
+      color: #1f2023;
+      margin: 0;
+      padding: 12px 60px 12px 16px;
+      font-size: 1.35em;
+      font-weight: 600;
+      text-align: left;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 8px rgba(255, 255, 255, 0.85);
+    }
+    .hamburger-btn {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      position: absolute;
+      top: 8px;
+      right: 14px;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      cursor: pointer;
+      z-index: 1001;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(77, 78, 83, 0.25);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    .hamburger-btn .hamburger-line {
+      display: block;
+      width: 22px;
+      height: 2.5px;
+      background-color: #1f2023;
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    #navbar.nav-open .hamburger-btn .hamburger-line:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+    #navbar.nav-open .hamburger-btn .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+    #navbar.nav-open .hamburger-btn .hamburger-line:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+    #navbar ul {
+      border: 0px solid;
+      height: auto;
+      max-height: 0;
+      opacity: 0;
+      overflow-y: hidden;
+      pointer-events: none;
+      margin: 0;
+      padding: 0;
+      transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out;
+    }
+    #navbar.nav-open ul {
+      max-height: 75vh;
+      opacity: 1;
+      overflow-y: auto;
+      pointer-events: auto;
+      border-top: 1px solid rgba(77, 78, 83, 0.25);
+    }
+    #navbar li {
+      color: #1f2023;
+      border-top: 1px solid rgba(77, 78, 83, 0.2);
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+    #navbar li:first-child {
+      border-top: none;
+    }
+    #navbar a {
+      color: #1f2023;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 8px rgba(255, 255, 255, 0.85);
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    #navbar a:hover,
+    #navbar a:active {
+      background-color: rgba(27, 173, 214, 0.75);
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
     #main-doc {
       position: relative;
       margin-left: 0px;
-      margin-top: 270px;
+      margin-top: 65px;
+    }
+    .main-section {
+      scroll-margin-top: 65px;
     }
 /* code { display: block; white-space: normal; }
 This enables the code display blocks to resize and wrap text

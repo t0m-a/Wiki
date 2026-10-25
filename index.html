@@ -10,7 +10,7 @@
   gtag('config', 'UA-120541560-3');
 </script>
     <title>Wiki - Home</title>
-    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">
+    <LINK REL=StyleSheet HREF="style.css?v=3" TYPE="text/css">
     <meta charset="UTF-8">
     <meta name="description" content="Wiki Technical Documentation">
     <meta name="keywords" content="linux system administration,unix system administration,linux sysadmin,unix sysadmin,wiki linux, 
@@ -29,8 +29,14 @@
 <body>
 <nav id="navbar">
         <header class="header-title">Technical Documentation</header>
-        <ul>
+        <button type="button" class="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false" onclick="this.parentElement.classList.toggle('nav-open'); this.setAttribute('aria-expanded', this.parentElement.classList.contains('nav-open'));">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <ul onclick="if(event.target.tagName==='A'){this.parentElement.classList.remove('nav-open'); this.parentElement.querySelector('.hamburger-btn').setAttribute('aria-expanded','false');}">
           <li><a href="#Introduction" class="nav-link" >Introduction</a></li>
+          <li><a href="https://rag.tsimon.me" title="Edge Semantic Search & RAG Knowledge Hub" class="nav-link" >New Edge Knowledge Hub</a></li>
           <li><a href="#Bash_and_Shellscript" class="nav-link">Bash and Shellscript</a></li>
           <li><a href="#Linux_and_Unix_Tools" class="nav-link">Linux and Unix Tools</a></li>
           <li><a href="#Vi_Basics" class="nav-link">Vi Basics</a></li>
@@ -52,7 +58,9 @@
     <header>Introduction</header><hr>
     <article><p>Welcome to my technical Wiki. Initially built as a challenge part of freeCodeCamp Responsive Web Design lesson,
         it is my goto memo / knowledge base.<br>
-        On this home page you will find a summary of every section covered. For instance, some of the covered topics are:<br>
+        <span class="highlight-text">[EDIT 10/25/2026 - T.Simon] I built a Retrieval Augmented Generation tool:</span> Edge Semantic Search & RAG Knowledge Hub at <a href="https://rag.tsimon.me" title="Edge Semantic Search & RAG Knowledge Hub">rag.tsimon.me</a><br>
+        The vectorial database will be updated with new knowledge there. You can request access on the <a href="https://rag.tsimon.me" title="Edge Semantic Search & RAG Knowledge Hub">login page</a> of the tool with your email.</p>
+        <p>On this page you will find a summary of every section covered. For instance, some of the covered topics are:<br>
         <ul>
             <li>Docker management command lines</li>
             <li>Notes on Bash and shell scripting</li>
