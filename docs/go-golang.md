@@ -1,6 +1,6 @@
 # Go (Golang) Programming Notes
 
-> [← Back to Main Index](../README.md)
+> [← Back to Main Index](README.md)
 
 ## Table of Contents
 

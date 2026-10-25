@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Wiki - Useful Commands</title>
+    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">
+    <meta charset="UTF-8">
+    <meta name="description" content="Wiki Technical Documentation">
+    <meta name="keywords" content="linux system administration,unix system administration,linux sysadmin,unix sysadmin,wiki linux, 
+    linux technical documentation,sed,cut,awk,find,ssh,pts,tty,iptables,docker,sql,git,github,go,golang,go golang,ssl,openssl,network,
+    linux network,network management,linux network management,vi text editor,vi how to quit,text editor,ide,linux ide,linux resources,bash,
+    shellscript,bash shellscript,shell scripting,loop,bash loop,colors in bash,color in bash,bash color,bash colors">
+    <meta name="author" content="Thomas Simon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<nav id="navbar">
+        <header class="header-title">Technical Documentation</header>
+        <ul>
+          <li><a href="index.html#Introduction" class="nav-link" >Introduction</a></li>
+          <li><a href="bash.html#Bash_and_Shellscript" class="nav-link">Bash and Shellscript</a></li>
+          <li><a href="linuxtools.html#Linux_and_Unix_Tools" class="nav-link">Linux and Unix Tools</a></li>
+          <li><a href="index.html#Vi_Basics" class="nav-link">Vi Basics</a></li>
+          <li><a href="usefulcommands.html#Useful_Commands" class="nav-link">Useful Commands</a></li>
+          <li><a href="ssh-pts-tty.html#SSH,_PTS_and_TTY" class="nav-link">SSH, PTS and TTY</a></li>
+          <li><a href="iptables-and-network-management.html#Iptables_and_Network_Management" class="nav-link">Iptables and Network</a></li>
+          <li><a href="common-sql-commands.html#Common_SQL_Commands" class="nav-link">Common SQL Commands</a></li>
+          <li><a href="ssl-tips-and-tricks.html#SSL_Tips_and_Tricks" class="nav-link">SSL Tips and Tricks</a></li>
+          <li><a href="docker-administration.html#Docker_Commands" class="nav-link">Docker Commands</a></li>
+          <li><a href="git-and-guthub-memo.html#Git_and_GitHub_Memo" class="nav-link">Git and GitHub Memo</a></li>
+          <li><a href="go-golang.html#Go_(Golang)" class="nav-link">Go (Golang)</a></li>
+          <li><a href="index.html#LDAP_and_Open_LDAP_Management_and_Administration" class="nav-link">LDAP and Open LDAP</a></li>
+          <li><a href="index.html#Useful_Resources" class="nav-link">Useful Resources</a></li>
+        </ul>
+      </nav>
+
+<main id="main-doc">
+<section class="main-section" id="Useful_Commands">
+        <header>Miscallenous Useful Commands page index</header>
+        <article>This is the current content sections of the page: 
+            <a href="#net">Network</a>, 
+            <a href="#nfs">NFS</a>, 
+            <a href="#mon">Monitoring</a>, <a href="#sys">System</a>, <a href="#misc">Miscallenous</a>
+</article>
+</section>
+<section class="main-section" id="net">
+    <header>Network</header><hr>
+    <article>
+        <p><code>wget https://hostname.fqdn/ --delete-after --no-check-certificate (equivalent curl -k)
+wget https://10.0.0.20/ --no-check-certificate</code>
+            Forge a POST request for tests:<br>
+            <code>curl -i -X POST -H 'Content-Type: application/json' -d '{"name": "New item", "year": "2009"}' https://domain.com/
+curl -i -X POST -H 'Content-Type: application/php' -d '{"name": "wanan.php}' https://domain.com/</code>
+            Add a network route:<br>	
+            <code>route add default gw {IP-ADDRESS} {INTERFACE-NAME}
+ip route add 192.168.1.0/24 via 192.168.1.254	</code>
+            Remotely tcpdump all traffic except ssh on port 22:<br>
+            <code>ssh root@ -- "tcpdump -w - -s 65535 'not port 22' > capture.pcap</code>
+          </p>      
+    <hr>
+    </article>
+</section>
+<section class="main-section" id="nfs">
+  <header>Network File systen - NFS</header><hr>
+  <article><p>Lines example in fstab:<br>
+    <code>/mnt/db1      IP_ADDRESS/255.255.255.0(rw,sync)
+/mnt/db0      IP_ADDRESS/255.255.255.0(ro,sync)</code>
+    Manual Mount Commands:<br>
+    <code>mount -o nolock IP_ADDRESS_NFS_SERVER:/shared/mount/point /LOCAL/MOUNT/POINT</code>
+    Example:<br>
+    <code>mount -o nolock IP_ADDRESS:/mnt/db1 /srv/db1</code>
+    <code>/mnt/dnbd1      IP_ADDRESS/255.255.255.0(rw,sync)
+/mnt/dnbd0      IP_ADDRESS/255.255.255.0(rw,sync)
+mount -o nolock IP_ADDRESS:/mnt/dnbd0 /srv/dnbd0
+mount -o nolock IP_ADDRESS:/mnt/dnbd1 /srv/dnbd1</code></p>
+  <hr>
+  </article>
+</section>
+<section class="main-section" id="mon">
+  <header>Monitoring</header><hr>
+  <article>
+      <p>Watching established connection between two hosts:<br>
+        <code>watch -d -n 3 "netstat -ap | grep `hostname`:4444[1-4] | grep ESTABLISHED"</code> 
+        Watching a reverse proxy access_log, counting requests:<br>
+        <code>cd /logs &&  for s in `ls -lrt *_access_log | grep " $(date "+%b %d")" | grep -v servername| awk '{print $9}'`; do flog $s; done</code>
+        Remote multi tail on log files passed through colorization (with ccze):<br>
+        <code>ssh -i id-do-sfo02 root@web01 -p9922 'tail -F /logs/*.log | ccze -A'</code>
+        <b>flog</b>: dump STDIN to file and reopen on SIGHUP<br>
+        The always useful tail, cat and consorts:<br>
+        <code>tail -f /logs/access | grep 'string'
+tail -f /logs/access | grep -E --color "$string|OtherString|AnotherString"
+cat /logs/access | grep -E "string" | tail -1 | awk '{print $3}' | cut -d= -f2</code>
+        Limites, lsof, fuser and watch:<br>
+<code>/proc/$PID/limits 
+                  \___Limits N directory
+                             N maximum files opened at the same time, Number N of file descriptor 
+sysctl limites.conf
+lsof 	|___________ Check process or user using a remote FS
+fuser	|</code>
+        <code>watch -d -n TEMPS en secondes "commande | commande 2 | etc..."</code></p>    
+  <hr>
+  </article>
+</section>
+<section class="main-section" id="sys">
+  <header>System</header><hr>
+  <article>
+      <p>Manage Services via SYSTEMCTL:<br>
+        <code>systemctl list-units --type=service 
+systemctl is-active service_name.service</code>
+        Rename an host:<br>
+        <code>hostnamectl set-hostname NEW_NAME_HERE
+systemctl restart systemd-logind.service</code>
+        Example:<br>
+        <code>hostnamectl set-hostname debsrv01 && systemctl restart systemd-logind.service</code>
+        Reconfigure Time Zone:<br>
+        <code>dpkg-reconfigure tzdata</code></p>
+        <hr>
+  </article>
+</section>
+<section class="main-section" id="misc">
+    <header>Miscellaneous awesome commands</header><hr>
+    <article><p>
+        <code>ctrl+R in bash <= reverse search
+ctrl+L in bash <= clear screen
+apachectl -t <= Test Apache configurations
+chkconfig
+systemctl 
+cd - <= returns to your previous directory</code>
+            See what is installed on a Debian / Ubuntu system:<br>
+            <code>dpkg-query -f '${binary:Package}\n' -W</code>
+            How To Remove All Packages Installed After a Date:<br>
+            <code>grep "2015-12-19.*.install " /var/log/dpkg.log | awk '{ print $4 }' | cut -d: -f1 > file.txt
+apt-get remove --purge | paste -s -d ' ' file.txt</code>
+            <code>bg <= Backgrounds a job, more on jobs, see the jobs command
+fg <= Foregrounds a job, more on jobs, see the jobs command</code>
+            <code>free
+uname
+whereis
+whatis
+id / whoami
+who <= who's connected
+w <= What do connected users do?</code>
+            Disk Usage: Easier and shorter way to read outpur for DU -H on a single folder, example:<br>
+            <code>du -h --max-depth=1 .</code>
+            <code>mtr <= MyTraceRoute ping + traceroute combined
+nl <= number of lines in a file
+ss <= netstat likely but with more options and info
+tree (not by default in system bins)
+pstree (of a pid: awesome!)</code>
+            <b>A blank space before typing a command in Bash Shell will prevent it from being recorder in history.</b>
+            FILE and STAT on a file give back info:<br>
+            <code>file infos.txt && stat infos.txt</code>
+            <b>less Shift+F</b> = <b>tail -f</b><br>
+            Copy file permissions from one to another:<br>
+            <code>chown --reference=reference_file file
+chmod --reference=users.list users1.list users2.list users3.list</code>
+            THE column COMMAND, awesome too:<br>
+            <code>mount | column -t</code>
+            <code>screen ./long-unix-script.sh</code>
+            To use when the command long-unix-script.sh is running hit CTRL+A and the D to de-attach from current bash/terminal process.<br>
+            Then to re-attach use:<br> 
+            <code>screen -r 4980.pts-0.localhost</code>
+            => PID_NUMBER.pts-DEVICE_NUMBER.host_where_command_runs<br>
+            <b>tac</b> is cat inversed a bit like a tail.<br>
+            Init Commands:<br>
+            <b>init 0</b> <= Is "reboot" harshly <br>
+            <b>init 6</b> <= Is "shutdown -r now", gracefully<br>
+            Sort:<br>
+            <b>sort -f -b</b> <= Sorts the content of a file<br>
+            <b>sort -f -b -o OUTPUT_FILE</b> <= To a specific output file named
+    </p>
+    </article>
+  </section>      
+<footer id="footer">&copy; 2019 All Rights Reserved <a href="https://tsimon.me" alt="Thomas Simon Professional Website" title="tsimon.me">Thomas Simon</a> -
+        <a href="https://github.com/t0m-a" target="_blank" title="t0m-a on GitHub">GitHub</a> - 
+        <a href="https://hub.docker.com/u/simonthomas/" target="_blank" title="Thomas Simon repositories on Docker Hub">Docker Hub</a> - 
+        <a href="https://www.facebook.com/tsim0n" target="_blank" title="Thomas Simon on Facebook">Facebook</a> - 
+        <a href="https://www.linkedin.com/in/thomas-simon-bolivie/?locale=en_US" target="_blank" title="Professional Profile of Thomas Simon on LinkedIn">LinkedIn</a> - 
+        <a href="https://twitter.com/7ohms" target="_blank" title="Twitter, where I talk the most">Twitter</a>
+ </footer>
+</main>
+</body>
+</html>

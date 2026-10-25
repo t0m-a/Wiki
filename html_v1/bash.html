@@ -1,0 +1,259 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta />	
+<title>Bash & Shell Memo</title>
+</head>
+<body id="pageTop">
+<div class="header">
+</div>
+<h1>Linux Bash & Shell Notes</h1>
+Table: <a href="#for">for loop</a> - <a href="#colors">colors in bash</a> - <a href="#exits">bash exits</a> - <a href="#args">scripts args</a> - <a href="#misc">miscallenous</a> - <a href="#new">new edits</a>
+<hr> 
+<section><h2 id="for">Bash the <u>for</u> loop</h2><hr>
+<h3>Simple Usage:</h3>
+<p>Example:<br/>
+<pre>for i in $(cmd); do cmd $i; done</pre>
+Example 2:<br/>
+<pre>TEST="1 2 3"
+for i in $TEST;do echo $i;done
+1
+2
+3</pre>
+Then with double quotes:<br/>
+<pre>for i in "$TEST";do echo $i;done
+1 2 3</pre></p>
+<h3>A for loop used with a docker example:</h3>
+<p><pre>docker images 
+REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
+php                     fpm                 0a757334c1f6        12 days ago         368MB
+mariadb                 latest              4828ff028cad        12 days ago         401MB
+phpmyadmin/phpmyadmin   latest              4bdc31ab2ded        13 days ago         164MB
+owncloud/server         10.0                06205d21154b        2 weeks ago         782MB
+redis                   latest              bfcb1f6df2db        5 weeks ago         107MB
+nginx                   latest              ae513a47849c        5 weeks ago         109MB
+debian                  latest              8626492fecd3        5 weeks ago         101MB
+ubuntu                  latest              452a96d81c30        5 weeks ago         79.6MB
+webhippie/mariadb       latest              ca4fdebdc099        8 weeks ago         202MB
+webhippie/redis         latest              906a93578062        2 months ago        55MB
+</pre>
+Now with a for loop:<br/>
+<pre>
+for i in $(docker images | awk '{print $3}' | grep -v IMAGE); do echo $i; done
+</pre>
+Shows:<br/>
+<pre>
+0a757334c1f6
+4828ff028cad
+4bdc31ab2ded
+06205d21154b
+bfcb1f6df2db
+ae513a47849c
+8626492fecd3
+452a96d81c30
+ca4fdebdc099
+906a93578062
+</pre>
+In a text file, that we'll remove:<br/>
+<pre>
+for i in $(docker images | awk '{print $3}' | grep -v IMAGE); do echo $i > inTextFile.txt \
+&& cat inTextFile.txt && rm -f inTextFile.txt; done</pre></p>
+<h3>Manage Servers with a for loop</h3>
+<p>Below we'll update remote host files with name servers mapped to LAN IP addresses and ping them:<br/>
+<pre>for s in $(cat servers_list | grep servers_prefix);do ssh $s 'cat /root/servers_list >> \
+/etc/hosts && export servers=$(cat /etc/hosts | grep 192 | cut -c1-15) && ping -c 2 $servers';done</pre>
+Below we'll manage Web services with a for loop:<br/>
+<pre>services='apache2 nginx'(<= First the back end server and then the front end server)</pre>
+<pre>for services in $services; do /etc/init.d/$services start|stop|status|reload; done</pre>
+Below we'll look into a servers list and add to each of their root account's file named env_vars their IP addresses:<br/>
+<pre>for s in $(cat servers_list); do ssh $s 'echo "export eth=$(ifconfig | \
+grep -i "inet addr:" | cut -c21-31 | grep -v "127.0.0.1")" >> /root/env_vars';done</pre></p>
+<h3>Manage data with a for loop</h3>
+<p>Display all IP addresses resulted by an ifconfig command:<br/>
+<pre>for i in $(ifconfig | grep -i "inet addr:" | awk '{print $2}' | cut -d: -f2); do echo $i;done</pre>
+Manage specific files copy with a loop:<br/>
+<pre>for f in $(ls filename[0-9]); do cp $f /dir; done (or) do cp $(f)_$DATE; other_command; another_one; etc; done</pre></p>
+<hr>
+<h3>My loops</h3>
+<p><pre>for s in $(cat servers-cluster);do ssh -i privatekeyfile.pem ubuntu@$s \
+'sudo aws s3 cp s3://bucket-name/pma.conf/nginx.conf /root/dockerComposeWebServer/pma.conf/';done</pre>
+<pre>
+for s in $(cat servers-cluster);do ssh -i privatekeyfile.pem ubuntu@$s \
+"sudo su -c 'cd /root/dockerComposeWebServer && docker-compose down && docker-compose up -d'";done</pre>
+<pre>
+for s in $(cat /logs/main_access.log |grep -i 401 |grep -v Pingdom | cut -f 1 -d ''-''); \
+do fail2ban-client set wordpress banip $s;done</pre>
+<pre>for s in $(cat /logs/main_access.log |grep POST |grep -v Pingdom | grep -v ciro | cut -f 1 -d ''-''); \
+do fail2ban-client set wordpress banip $s;done</pre>
+<pre>cat /logs/main_access.log |grep -i 401 | grep -v pingdom | cut -f 1 -d ''-''
+cat main_access.log |grep POST |grep -v ciro | grep -v pingdom | cut -f 1 -d ''-''
+</pre>
+</p><p></p>
+<hr>
+<h2 id="colors">Colors in Bash</h2>
+<hr>
+<p>Le passage de texte en couleur dans le shell est déclenché par la séquence:<br/>
+<pre>
+\033[XXm</pre>
+où <b>XX</b> est le code associé à la couleur choisie. Le code couleur <b>0</b> ramène la coloration aux valeurs par défaut.<br/>
+Code font et sur fond de couleur:<br/>
+<pre>
+echo -e "\033[45mHello world sur fond rose\033[0m"
+</pre>
+Cumul des codes couleurs:<br/>
+<pre>
+echo -e "\033[34m\033[45mHello world bleu sur fond rose\033[0m"</pre>
+Les cumuls ne nécessitent pas le rappel de la séquence d’échappement <b>\033[</b><br/>
+Les codes peuvent être cumulés en les séparant par un <b>;</b> dans une seule séquence. Ainsi, un texte rouge, gras, souligné, clignotant et surligné peut s’écrire:<br/>
+<pre>echo -e "\033[31m\033[1m\033[4m\033[5m\033[7mLe texte\033[0m"</pre>
+ou:<br/>
+<pre>echo -e "\033[31;1;4;5;7mLe texte\033[0m"</pre>
+Il est également possible de formater le texte: gras code <b>1</b>, souligné <b>4</b>, texte clignotant <b>5</b> ou surligner <b>7</b>:
+<pre>
+echo -e "\033[34mbleu, \033[1mgras, \033[4msouligné, \
+> \033[5mclignotant \033[7met surligné\033[0m"</pre></p>
+<p>Résumé des codes de formatage:<br/>
+Les codes dans la trentaine (30, 31, 32, etc) désignent les couleurs du texte tandis que ceux de la quarantaine désignent les couleurs d’arrière plan (40, 41, 42, etc).<br/>
+Les coloris disponibles sont principalement:<br/>
+<pre>
+30, 40 : noir ;
+31, 41 : rouge ;
+32, 42 : vert ;
+33, 43 : jaune ;
+34, 44 : bleu ;
+35, 45 : rose ;
+36, 46 : cyan ;
+37, 47 : gris.
+</pre>
+Comme vu précédemment, les codes de la première dizaine sont destinés à une mise en forme des textes:<br/>
+<pre>
+0 : retour aux paramètres par défaut ;
+1 : texte en gras ;
+4 : souligner ;
+5 : clignotant ;
+7 : surligner.
+</pre></p><hr>
+<h2 id="exits">Les sorties standards du Shell en Bash</h2><hr>
+<pre>STDIN  = 0
+STDOUT = 1
+STDERR = 2</pre>
+<p><b>2>&1</b> = rediriger STDERR vers STDOUT - Rediriger la sortie d'erreur standard vers STDOUT<br/>
+<b>2>/dev/null</b> = rediriger STDERR vers le néant<br/>
+<b>1>/dev/null</b> = rediriger STDOUT vers le néant</p>
+<p>Tout processus possède 3 flux standards: Un d'entrée (typiquement le clavier) et deux de sortie (la sortie standard et l'erreur étant généralement l'affichage, ou bien un fichier). Ces trois flux sont représentés par des constantes STDIN, STDOUT et STDERR dont les valeurs sont respectivement 0, 1 et 2.</p>
+<p>La redirection du flux de sortie vers <b>/dev/null</b> avec <b>></b> ne va concerner que STDOUT, mais pas STDERR. Les messages envoyés sur cette sortie vont donc se retrouver à l'écran (en tout cas sur la sortie courante, cela peut aussi être un fichier de log).
+<br/>
+En précisant <b>2>/dev/null</b> on redirige uniquement STDERR.<br/>
+En utilisant <b>2>&1</b> on précise "rediriger STDERR là où est redirigé STDOUT" (le "1").<br/>
+Si STDOUT est précédemment redirigé vers <b>/dev/null</b>, alors STDERR suivra vers dev null.<br/>
+Si non, elle s'affichera à l'écran ou sera écrite dans le fichier vers lequel est redirigé le flux.</p>
+<p>Source: <a href="http://www.lanterne-rouge.info/article-que-signifie-dev-null-2-1-70233357.html" target="_blank">http://www.lanterne-rouge.info/article-que-signifie-dev-null-2-1-70233357.html</a></p>
+<hr>
+<h2 id="args">Passer des arguments à un Shell Script en Bash</h2><hr>
+<p><pre>debug script -x</pre>
+Equivalent de <b>-v</b> mais <b>-x</b> est plus verbeux, utile pour le debug.</p>
+<p><b>Shell script ARGS</b>:<br/>
+<pre>$0</pre> Nom du script en lui-même, utile pour la déclaration "usage" ou aide dans l'aide du script.<br/>
+<pre>$(basename $0)</pre>
+Pour n'afficher que le nom et pas le chemin absolu entier, ou </b>`basename $0`</b><br/>
+<pre>$1</pre>
+Argument positionnel, le premier argument passé au script après son nom dans le prompt.<br/> 
+<pre>${10}</pre>
+Si deux ou plus de chiffres sont nécessaires pour qualifier l'argument. <b>{valeur de l'argument}</b><br/>
+Des chiffres à une valeur positionnée sont attendus.<br/>
+<pre>$#</pre>
+Compteur d'arguments. Utile si nous attendons un nombre précis d'argument pour la bonne exécution du script.<br/>
+Le compteur d'argument sert à définir ce nombre d'arguments.<br/>
+<pre>$*</pre>
+Réfère à tous les arguments ajoutés après le nom du script, et ceci sans limite du nombre<br/>
+<b>Les guillemets simples protègent toute l'expression de l'interpréteur</b> BASH y compris le déclarateur de la variable <b>$</b> et son contenu.<br/>
+<pre>echo '$1' = $1</pre>
+Alors que:<pre>echo "$1" = echo le contenu de $1</pre>
+<b>\</b> pour échapper d'une protection. Exemple:<br/>
+<pre>"$USER texte \$4" = Contenu de la variable $USER texte $4</pre>
+<pre>exit 0</pre>
+C'est obligatoire à faire en fin de script, c'est utilisé pour vérifier la sortie.<br/>
+<pre>0 = Sortie sans erreurs</pre>
+<pre>1 = Sortie en erreur</pre>
+</p>
+<hr>
+<h2 id="misc">Miscellaneous Bash Tips & Infos</h2>
+<hr>
+<h3>Word Count</h3>
+<pre>wc : word count
+wc -l, --lines ==> print the newline counts
+wc -L, --max-line-length ==> print the maximum display width
+wc -w ==> prints the words count
+</pre>
+<h3>Commands operators</h3>
+<pre>
+&& Launch the second command <b>if the first exit successfully</b> 
+|| Launch the second command <b>if the first exit on error</b>
+</pre>
+<h3>Date(s) in Bash</h3>
+To use date in a shell script:<br/>
+<pre>`date +$Y$m$d$H$M`</pre>
+Defining Date as a variable to use it in a shell script:<br/>
+<pre>myDateVar=$(date +%Y%m%d%H%M)</pre>
+<pre>echo $myDateVar returns 201703251313</pre>
+<h3>PS - Process Management Commands</h3>
+<pre>ps -ef | grep -i "pid" | grep -i "une date type Feb10" | awk `{print $2}` | xargs (example xargs kill -9)</pre> 
+<pre>ps -aef or -ef</pre> 
+<pre>ps aux</pre>
+<p><b>-e</b> ou <b>-A</b> liste tous les procesus actifs.<br/>
+<b>-au</b> ou <b>-aux</b> liste tous les processus au formats BSD.<br/>
+<b>-ef</b> ou <b>-eF</b> liste les processus avec un format de ligne longue.<br/>
+<b>-x</b> liste les processus running.<br/>
+Plus d'informations sur les commandes processus: <a href="https://www.tecmint.com/ps-command-examples-for-linux-process-monitoring/" target="_blank">https://www.tecmint.com/ps-command-examples-for-linux-process-monitoring/</a>.
+<hr>
+<h2>WSL Bash for Windows Backup</h2><hr>
+<pre>
+#===================================================================================
+## Backup LXSS
+#! /bin/bash
+# tarlxss.sh
+# script to back up lxss local directories
+export myDate=`exec date '+%Y%m%d'`
+# change this line!!! Probably should be someplace in DrvFS (/mnt/...)
+export backdir=/mnt/appropriate/backup/path
+# this next line is quite long, make sure it doesn't "wrap"
+export TARCMD="/bin/tar --verbose --create --one-file-system --xz --exclude=./var/run --index-file=${backdir}/local-${myDate}.log --file 
+${backdir}/local-${myDate}.tar.xz "
+#
+export XZCMD="/usr/bin/xz"
+# /etc contains some things worth keeping, like modified config files and 
+# sshd certificates, so it might be good to add ./etc/ssh (or just ./etc) to the backup
+# the first thing after $TARCMD (below) must be the list of dirs to back up
+# start in the root of the filesystem
+cd /
+$TARCMD  ./home ./root ./usr/local 
+tarreturn=$?
+echo $0: finished, returned $tarreturn >> ${backdir}/local-${myDate}.log
+$XZCMD ${backdir}/local-${myDate}.log
+xzreturn=$?
+echo $0: finished normally, tar with $tarreturn, xz with $xzreturn 
+#===================================================================================
+You can run it daily (for example) from Task Scheduler. Under "Actions" put:
+Action: Start a program
+Program/Script: c:\windows\system32\bash.exe
+Add arguments (optional): -c 'sudo /path/to/tarlxss.sh'
+#===================================================================================
+</pre></p>
+<h3>VMware Batch</h3>
+<p>VMware Autolaunch VMs .bat Put in a BATCH file in start menu folder:<br/>
+<pre>cd "\Program Files\VMware\VMware Workstation"
+vmware -x "C:\My virtual machine\winxppro.vmx"</pre>
+Or:<pre>
+"C:\Program Files (x86)\VMware\VMware Workstation\vmware.exe" -X "Z:\Virtual Machines\XP_Dev\winXPPro.vmx"</pre></p>
+<hr>
+<h2 id="new">New Edits</h2><hr>
+<p>...
+<pre>...</pre>
+</p>
+</section>
+<footer><hr><p>Last update <time datetime="2018-08-07">08 August 2018</time> - Thomas Simon - <a href="index.html">&larr;</a> - <a href="#pageTop">&uarr;</a></p>
+</footer>	
+</body>	
+</html>

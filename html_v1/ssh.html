@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta />	
+<title>SSH - DSH</title>
+</head>
+<body id="pageTop">
+<div class="header">
+</div>
+<h1>SSH - DSH</h1>
+Table: <a href="#ssh">ssh</a> - <a href="#dsh">dsh</a> - <a href="#scp">scp</a> - <a href="#new">new edits</a>
+<hr> 
+<section>
+<h2 id="ssh">SSH</h2><hr>
+<h3>Introduction</h3>
+<p>Difference between Shell, Console and Terminal:<br/>
+The terminal connects to the console where the shell is presented.<br/>
+A TTY is a teletypewriter. It is essentially the equivalent of the console port but is often virtualized in software. If you jump to a different virtual console on your Linux machine using ctrl+alt+f1 to 12 combination and login in, you can see the multiple consoles with logged in users by running the who command.
+Then there are PTS devices which are Pseudo Terminal Slaves, a virtual device of sorts. They are a form of TTY, but one that is emulated to allow a TTY connection over a network or some other means. SSH and Telnet are good examples of programs that use PTS devices.</p>
+<h3>SSH: Tunneling</h3>
+<p>Source: <a href="https://www.howtogeek.com/168145/how-to-use-ssh-tunneling/">https://www.howtogeek.com/168145/how-to-use-ssh-tunneling/</a><br/>
+To use local forwarding, connect to the SSH server normally, but also supply the -L argument.<br/>The syntax is:<br/>
+<pre>ssh -L local_port:remote_address:remote_port username@server.com</pre>
+For example, let’s say the database server at your office is located at 192.168.1.111 on the office network. You have access to the office’s SSH server at ssh.youroffice.com , and your user account on the SSH server is bob . In that case, your command would look like this:<br/><pre>
+ssh -L 8888:192.168.1.111:1234 bob@ssh.youroffice.com</pre>
+SSH Agent:<br/>
+<pre>eval `ssh-agent -s` & ssh-add</pre>
+Add to your Bash config file:<br/>
+<pre>SSHAGENT=/usr/bin/ssh-agent
+SSHAGENTARGS="-s"
+if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
+eval `$SSHAGENT $SSHAGENTARGS`
+trap "kill $SSH_AGENT_PID" 0
+fi</pre>
+This will start an agent automatically for each new command prompt window that you open (which is suboptimal if you open multiple command prompts in one session, but at least it should work).</p>
+<h3>SSH Key Management</h3>
+<p>Add a passphrase to a key generated without:<br/>
+<pre>ssh-keygen -p -f keyfile</pre>
+Remove a passphrase from a key:<br/>
+<pre>ssh-keygen -p [-P old_passphrase] [-N new_passphrase] [-f keyfile]</pre>
+Leave the new_passphrase blank.<br/>
+Fun ssh command:<br/><pre>
+for s in $(cat AWS-ec2-cluster); \
+do ssh -i ec2-aws-linux-20180712.pem ubuntu@$s <b>"</b><b>sudo su -c</b> <b>'</b>cd /root/dockerComposeWebServer && \
+docker-compose down && docker-compose up -d<b>'"</b>;done</pre>
+</p><hr>
+<h2 id="dsh">DSH</h2><hr>
+<p>Server Group: /etc/dsh/group/<br/>
+<pre>options :
+-f machinefile 	: Add all machines found in the specified file to the list of machines that the specified command is executed.
+-g groupname 	: Add  all  machines found in /etc/dsh/group/groupname to the list of machines that the specified 
+				  command is executed.
+-w 		: Executes on each machine and waits for the execution finishing before moving on to the next machine.
+-c		: Executes shell concurrently.
+-M		: Prepends machine names on the standard output. Useful to be used in  conjunction  with  the  
+		  --concurrent-shell option so that the output is slightly more parsable.</pre>
+Examples:<br/>
+<pre>dsh -g POOL_Dir/Server_Group_File "df -h /"
+dsh -c -m $(grep serverSname* /etc/dsh/group/pool/servers_types|perl -pe 'print "," if($i++);chomp;') \
+'/users/dev/script.pl /logs/script.pl_log- 20181202[5-9]*  /logs/script.pl_log'</pre></p><hr>
+<h2 id="scp">SCP</h2><hr>
+<h3>Syntax</h3><p>
+Copy the file "foobar.txt" from a remote host to the local host:<br/><pre>
+scp your_username@remotehost.edu:foobar.txt /some/local/directory</pre> 
+Copy the file "foobar.txt" from the local host to a remote host:<br/><pre>
+scp foobar.txt your_username@remotehost.edu:/some/remote/directory </pre>
+Copy the directory "foo" from the local host to a remote host's directory "bar":<br/><pre>
+scp -r foo your_username@remotehost.edu:/some/remote/directory/bar </pre>
+Copy the file "foobar.txt" from remote host "rh1.edu" to remote host "rh2.edu":<br/><pre>
+scp your_username@rh1.edu:/some/remote/directory/foobar.txt \
+your_username@rh2.edu:/some/remote/directory/ </pre>
+Copying the files "foo.txt" and "bar.txt" from the local host to your home directory on the remote host:<br/><pre>
+scp foo.txt bar.txt your_username@remotehost.edu:~ </pre>
+Copy the file "foobar.txt" from the local host to a remote host using port 2264:<br/><pre>
+scp -P 2264 foobar.txt your_username@remotehost.edu:/some/remote/directory </pre>
+Copy multiple files from the remote host to your current directory on the local host:<br/><pre>
+scp your_username@remotehost.edu:/some/remote/directory/\{a,b,c\} .
+scp your_username@remotehost.edu:~/\{foo.txt,bar.txt\} .</pre></p>
+<h3>Performance</h3>
+<p>
+By default scp uses the Triple-DES cipher to encrypt the data being sent. Using the Blowfish cipher has been shown to increase speed. This can be done by using option -c blowfish in the command line.:<br/><pre>
+scp -c blowfish some_file your_username@remotehost.edu:~ </pre>
+It is often suggested that the -C option for compression should also be used to increase speed. The effect of compression, however, will only significantly increase speed if your connection is very slow. Otherwise it may just be adding extra burden to the CPU. An example of using blowfish and compression::<br/><pre>
+scp -c blowfish -C local_file your_username@remotehost.edu:~</pre></p>
+<hr>
+<h2 id="new">New Edits</h2><hr>
+</section>
+<footer><hr><p>Last update <time datetime="2018-08-07">08 August 2018</time> - Thomas Simon - <a href="index.html">&larr;</a> - <a href="#pageTop">&uarr;</a></p>
+</footer>	
+</body>	
+</html>

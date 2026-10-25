@@ -1,6 +1,6 @@
 # Docker & Docker Compose Administration
 
-> [← Back to Main Index](../README.md)
+> [← Back to Main Index](README.md)
 
 ## Table of Contents
 
@@ -235,7 +235,7 @@ apt-get install -y \
 
 ## Docker Compose (`docker-compose.yml`)
 
-Raw YAML files are also stored in [`htmlv2/docker/docker-compose.yml`](../htmlv2/docker/docker-compose.yml) and [`htmlv2/docker/docker-compose-2.yml`](../htmlv2/docker/docker-compose-2.yml).
+Complete working `docker-compose.yml` stack configurations are provided in the [Complete LEMP + phpMyAdmin Stack Example](#complete-lemp--phpmyadmin-stack-example) and [Lightweight Nginx + PHP-FPM Stack Example](#lightweight-nginx--php-fpm-stack-example) sections below.
 
 ### Complete LEMP + phpMyAdmin Stack Example
 
@@ -344,7 +344,7 @@ networks:
 
 ## Dockerfile Examples
 
-Raw file available at [`htmlv2/docker/Dockerfile`](../htmlv2/docker/Dockerfile).
+Below are two complete, working `Dockerfile` examples with data persistence, database setup, and X11 GUI export:
 
 ### Kali Linux + Sparta (X11 GUI Export)
 

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta />	
+<title>Linux Tools 3</title>
+</head>
+<body id="pageTop">
+<div class="header">
+</div>
+<h1>Linux Command Line Tools part 3</h1>
+Table: <a href="#misc">miscallenous</a> - <a href="#new">new edits</a>
+<hr> 
+<section><h2 id="misc">Linux Miscallenous Commands Memo</h2><hr>
+<p>
+The command below renames all .pdf files to .doc, here 's/\.pdf$/\.doc/' is the rule:<br/>
+<pre>$ rename -v 's/\.pdf$/\.doc/' *.pdf
+$ shred -zvu file.pdf</pre></p>
+<p>Shred: The options used in the above command:<br/>
+<pre>-z – adds a final overwrite with zeros to hide shredding.
+-u – helps to truncate and remove file after overwriting.
+-v – shows progress.</pre></p>
+<p>The man command is used to display manual entry pages of commands, when used with the -k switch, it searches the short descriptions and manual page names for the keyword printf (such as adjust, apache and php in the commands below) as regular expression.<br/>
+<pre>man -k apache
+man -k php</pre>
+<h2>Rclone & Rsync</h2>
+<p><pre>
+rclone sync --copy-links Workspaces/ google:/workspaces
+rclone copy /home/tom/Workspaces google:/Backups/
+rclone copy google:Backups/web01sfo02do ./
+
+sudo rsync -a --delete-after /home/tom /media/tom/Seagate\ Expansion\ Drive/
+rsync -a --delete-after /home/tom /path/to/hdd
+</pre></p>
+<hr>
+<h2 id="new">New Edits</h2><hr>
+</section>
+<footer><hr><p>Last update <time datetime="2018-08-07">08 August 2018</time> - Thomas Simon - <a href="index.html">&larr;</a> - <a href="#pageTop">&uarr;</a></p>
+</footer>	
+</body>	
+</html>

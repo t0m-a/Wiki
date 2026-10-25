@@ -1,6 +1,6 @@
 # SSL, OpenSSL & HTTPS/HSTS Tips and Tricks
 
-> [← Back to Main Index](../README.md)
+> [← Back to Main Index](README.md)
 
 ## Table of Contents
 

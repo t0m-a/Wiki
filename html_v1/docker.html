@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta />	
+<title>Docker</title>
+</head>
+<body id="pageTop">
+<div class="header">
+</div>
+<h1>Docker</h1>
+Table: <a href="#inst">installation</a> - <a href="#basics">basics</a> - <a href="#opt">options</a> - <a href="#comp">docker-compose</a> - <a href="#com">my commands</a> - <a href="#new">new edits</a>
+<hr> 
+<section>
+<h2 id="inst">Installing Docker</h2><hr>
+<h3>Debian Stretch</h3>
+<pre>curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -;
+apt-key adv --list-public-keys --with-fingerprint --with-colons | grep 9DC8 | cut -c 13-52 | \
+grep -q -w "9DC858229FC7DD38854AE2D88D81803C0EBFCD88" && export KEY_OK=KEY_OK;
+if [ "$KEY_OK" = 'KEY_OK' ]
+ then add-apt-repository \
+  "deb [arch=amd64] https://download.docker.com/linux/debian \
+   $(lsb_release -cs) \ stable" && apt-get update && apt-get install -y docker-ce; fi</pre>
+<h3>Ubuntu 18.04</h3>
+<pre>apt-get update && apt-get install -y docker.io</pre>
+<h3>Installing Docker Compose Debian & Ubuntu</h3>
+<p>Check latest version: <a href="https://github.com/docker/compose/releases" target="_blank">github.com/docker/compose/releases</a>
+<pre>
+curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) \
+-o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose && docker-compose --version</pre></p><hr>
+<h2 id="basics">Docker basic commands</h2><hr>
+<p>All the --link commands are legacy. Better use docker-compose and build networks for that purpose!<br/>
+If you need quick and non sustainable way to network container together you can use --link.<br/>
+This command will run a Web Server in a container linked to an SQL Server and launch init to keep it up:<br/>
+<pre>docker run --privileged --restart always -it \
+-v /local/mount/folder/path:/var/lib/mysql --link sql_server_container_name:sql_server_container_name \
+-v /sys/fs/cgroup:/sys/fs/cgroup  \
+--name web_server_container_name -d image_name:tag /sbin/init</pre>
+Run a Web Server container with a shared volume, host port mapped to container port, exposing the container port to the host, in daemon mode from an image:<br/><pre>
+docker run --name webserver -v /shared/DIR/from/host:/path/in/container:ro (rw) \
+-p HOST_PORT:CONTAINER_PORT -d (deamon) image_name</pre>
+This will run interactively an Nginx container linked to a PHP container named phpserver:<br/><pre>
+docker -it --link phpserver:phpserver nginx /bin/bash</pre>
+This is how is adds up:<br/><pre>
+docker -it --link ContainerName_ToLink:ContainerAlias image_name command_to_run 
+--link < name or id >:alias</pre>
+The alias is the other linked container host name as present in the our nginx container /etc/hosts file.<br/>
+Docker LINK hierarchy builds over a logical connection: NGINX connects to PHP which connects to MYSQL hence start MYSQL container first, then PHP and last NGINX. To keep persistent data when a container will stop, the DATA MUST BE STORED OUTSIDE THE CONTAINER: The volume for the mysql image <b>(-v /my/own/datadir:/var/lib/mysql)</b></p>
+<p>"Get into a container":<br/>
+<b>attach</b> Attach to a running container: <b>docker attach --sig-proxy=false CONTAINER_ID or CONTAINER_NAME</b> permits go back into a container with the <b>--sig-proxy=false</b> to not kill the container when the terminal is detached
+OR:<br/>
+<pre>docker exec -i -t CONTAINER_ID bash</pre></p>
+<p>Docker copy:<br/><pre>
+docker cp < containerId >:/file/path/within/container /host/path/target
+docker cp 25bc97fc48e3:/home/kali-user/167.99.27.137-201806190451.tar.gz \
+/home/tom/Workspaces/docker/sparta/sparta-data/</pre></p><hr>
+<h2 id="opt">The docker command options</h2><hr><p>
+<pre>
+build     Build an image from a Dockerfile
+commit    Create a new image from a container's changes
+|_ docker commit CONTAINER_ID
+ |_ docker tag NEW_IMAGE_ID NEW_IMAGE_NAME:NEW_IMAGE_TAG_(VERSION)
+cp        Copy files/folders from a container's filesystem to the host path
+create    Create a new container
+diff      Inspect changes on a container's filesystem
+events    Get real time events from the server
+exec      Run a command in an existing container
+export    Stream the contents of a container as a tar archive
+history   Show the history of an image
+images    List images | voir la « bibliothèque » d'images avec "docker images"
+import    Create a new filesystem image from the contents of a tarball
+info      Display system-wide information
+inspect   Return low-level information on a container
+kill      Kill a running container
+load      Load an image from a tar archive
+login     Register or log in to a Docker registry server
+logout    Log out from a Docker registry server
+logs      Fetch the logs of a container
+port      Lookup the public-facing port that is NAT-ed to PRIVATE_PORT
+pause     Pause all processes within a container
+ps        List containers or all ever ran --all
+pull      Pull an image or a repository from a Docker registry server
+push      Push an image or a repository to a Docker registry server
+restart   Restart a running container
+rm        Remove one or more containers
+rmi       Remove one or more images | docker rmi -f ou --force 
+run       Run a command in a new container | \
+-d as deamon -p HOST_PORT:CONTAINER_PORT expose ports | -ti t to emulate a TTY term and i to retreive it -v to mount a FS
+save      Save an image to a tar archive
+search    Search for an image on the Docker Hub
+start     Start a stopped container
+stop      Stop a running container
+tag       Tag an image into a repository
+top       Lookup the running processes of a container
+unpause   Unpause a paused container
+version   Show the Docker version information
+wait      Block until a container stops, then print its exit code
+</pre></p>
+<h3>Common docker usages</h3>
+<p>Tag an image locally and on a repository:<br/><pre>
+docker tag local-image:tagname new-repo:tagname</pre>
+Then push the image to the repository<br/><pre>
+docker push new-repo:tagname</pre>
+NB: You'll need to get your API Key or to be logged in.<br/>
+Docker Tag / Docker push to repository: https://stackoverflow.com/questions/41984399/denied-requested-access-to-the-resource-is-denied-docker<br/><pre>
+curl -u your_docker_user_name:apikey https://cloud.docker.com/api/app/v1/service/
+docker push your_docker_user_name/remote-images:tagname</pre>
+Get an official Debian && connect into it:<br/><pre>
+docker pull debian && docker run -it debian /bin/bash</pre>
+A container launched with -d can be accessed to see what's happening into the it with -ti --sig-proxy=false
+An example of a "complex" docker command launching an SQL Server with persistent data store and database user configuration (insecure)<br/><pre>
+docker run --name sqlsrv3 -v /mnt/databases:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=root_password -e MYSQL_DATABASE=db-sql -e MYSQL_USER=db_user \
+-e MYSQL_PASSWORD=db_user_password -d mysql:latest</pre>
+One liner to stop / remove all of Docker containers:<br/><pre>
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+</pre></p>
+<h3>Post Install for a Minimal Debian Container</h3>
+<p><pre>apt-get update && apt-get upgrade -y && apt-get install -y curl wget gzip \
+unzip vim vim-common vim-runtime htop sysstat net-tools</pre>
+Or, basics needed in new docker container:<br/><pre>
+apt-get install -y curl gzip bzip2 unzip curl wget htop sysstat \
+apt-transport-https software-properties-common apt-utils gnupg2 nano;
+</pre></p><hr>
+<h2 id="comp">The docker-compose command</h2><hr>
+<p>As a fully explained example see tsimon.me/blog/dev-lemp-stack-docker-compose/<br/>
+Below is a docker-compose.yml file as a fully working example:<br/><pre>
+version: '3'
+services:
+ web:
+   image: nginx:latest
+   restart: always
+   ports:
+     - "80:80"
+     - "443:443"
+   volumes:
+     - ./nginx.conf/nginx.conf:/etc/nginx/nginx.conf
+     - ./html:/html
+     - ./site.conf:/etc/nginx/sites-enabled
+     - ./certs:/certs
+     - ./logs:/var/log/nginx
+     - ./mime.types/mime.types:/etc/nginx/mime.types
+   networks:
+     - lemp-network
+ php:
+   image: php:fpm
+   restart: always
+   volumes:
+     - ./html:/html
+     - ./php-log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+   networks:
+     - lemp-network
+ db:
+   image: mariadb:latest
+   restart: always
+   ports:
+     - "3306:3306"
+   volumes:
+     - ./db-data:/var/lib/mysql
+   environment:
+     - MYSQL_ROOT_PASSWORD=test
+   networks:
+     - lemp-network
+ phpmyadmin:
+  image: phpmyadmin/phpmyadmin:latest
+  restart: always
+  ports:
+     - "8080:443"
+  volumes:
+     - ./pma.conf/nginx.conf:/etc/nginx.conf
+     - ./pma.conf/htpasswd:/htpasswd
+     - ./logs:/var/log/nginx
+     - ./certs:/certs
+  environment:
+     - MYSQL_USERNAME:root
+     - MYSQL_ROOT_PASSWORD:test
+     - PMA_HOST:db
+  networks:
+     - lemp-network
+networks:
+ lemp-network:
+     driver: bridge
+</pre>
+The RAW File is available here: https://wiki.tsimon.me/repo/</p>
+<pre>
+sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) \
+-o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+</pre>
+<h2 id="com">Docker commands</h2><hr><p>
+<pre>sudo docker cp 6f69511443c5:/var/lib/postgresql/10 \
+	/home/tom/Workspaces/docker/armitage/postgresql
+sudo docker cp 6f69511443c5:/usr/share/metasploit-framework/config/database.yml \
+/home/tom/Workspaces/docker/armitage/database.yml</pre>
+<pre>
+docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+--mount type=bind,src=/path/to/docker/folders/home/kali-user,dst=/home/kali-user \
+$IMAGE_NAME:IMAGE_TAG</pre>
+<pre>
+docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+--mount type=bind,src=/home/tom/Workspaces/docker/armitage/root,dst=/root \
+--mount type=bind,src=/home/tom/Workspaces/docker/armitage/armitage-data,dst=/usr/share/armitage \
+--mount type=bind,src=/home/tom/Workspaces/docker/armitage/home/kali-user,dst=/home/kali-user \
+--mount type=bind,src=/home/tom/Workspaces/docker/armitage/postgresql,dst=/var/lib/postgresql \
+armitage:latest
+</pre>
+<pre>
+docker run -ti -rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+--mount type=bind,src=/home/tom/Workspaces/docker/maltego/root,dst=/root \
+--mount type=bind,src=/home/tom/Workspaces/docker/maltego/home/kali-user,dst=/home/kali-user \
+simonthomas/maltego:latest
+</pre><pre>
+--mount type=bind,src=/home/tom/Workspaces/docker/cloudtools/data,dst=/root/data
+</pre><pre>
+docker run -ti -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+--mount type=bind,src=/home/tom/Workspaces/docker/kali-linux-web-assessment/root,dst=/root \
+--mount type=bind,src=/home/tom/Workspaces/docker/kali-linux-web-assessment/bashrc,dst=/root/.bashrc \
+--mount type=bind,src=/home/tom/Workspaces/docker/kali-linux-web-assessment/data,dst=/data \
+--mount type=bind,src=/home/tom/Workspaces/docker/kali-linux-web-assessment/home/kali-user,dst=/home/kali-user \
+--mount type=bind,src=/home/tom/Workspaces/docker/kali-linux-web-assessment/postgresql,dst=/var/lib/postgresql \
+simonthomas/kali-linux-web-assessment:latest 
+</pre><pre>
+export SEP="-------------------------------------------------"
+alias full-docker-list='docker ps && echo $SEP && docker ps --all && echo $SEP && docker images'
+</pre>
+</p>
+
+
+<hr>
+<h2 id="new">New Edits</h2><hr>
+<h3>To Be Continued ...</h3>
+<p>docker-machine<br/>
+docker-swarm</p>
+</section>
+<footer><hr><p>Last update <time datetime="2018-08-07">08 August 2018</time> - Thomas Simon - <a href="index.html">&larr;</a> - <a href="#pageTop">&uarr;</a></p>
+</footer>	
+</body>	
+</html>

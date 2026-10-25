@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-120541560-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-120541560-3');
+</script>
+    <title>Wiki - Home</title>
+    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">
+    <meta charset="UTF-8">
+    <meta name="description" content="Wiki Technical Documentation">
+    <meta name="keywords" content="linux system administration,unix system administration,linux sysadmin,unix sysadmin,wiki linux, 
+    linux technical documentation,sed,cut,awk,find,ssh,pts,tty,iptables,docker,sql,git,github,go,golang,go golang,ssl,openssl,network,
+    linux network,network management,linux network management,vi text editor,vi how to quit,text editor,ide,linux ide,linux resources,bash,
+    shellscript,bash shellscript,shell scripting,loop,bash loop,colors in bash,color in bash,bash color,bash colors">
+    <meta name="author" content="Thomas Simon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<nav id="navbar">
+        <header class="header-title">Technical Documentation</header>
+        <ul>
+          <li><a href="#Introduction" class="nav-link" >Introduction</a></li>
+          <li><a href="#Bash_and_Shellscript" class="nav-link">Bash and Shellscript</a></li>
+          <li><a href="#Linux_and_Unix_Tools" class="nav-link">Linux and Unix Tools</a></li>
+          <li><a href="#Vi_Basics" class="nav-link">Vi Basics</a></li>
+          <li><a href="#Useful_Commands" class="nav-link">Useful Commands</a></li>
+          <li><a href="#SSH,_PTS_and_TTY" class="nav-link">SSH, PTS and TTY</a></li>
+          <li><a href="#Iptables_and_Network_Management" class="nav-link">Iptables and Network</a></li>
+          <li><a href="#Common_SQL_Commands" class="nav-link">Common SQL Commands</a></li>
+          <li><a href="#SSL_Tips_and_Tricks" class="nav-link">SSL Tips and Tricks</a></li>
+          <li><a href="#Docker_Commands" class="nav-link">Docker Commands</a></li>
+          <li><a href="#Git_and_GitHub_Memo" class="nav-link">Git and GitHub Memo</a></li>
+          <li><a href="#Go_(Golang)" class="nav-link">Go (Golang)</a></li>
+          <li><a href="#LDAP_and_Open_LDAP_Management_and_Administration" class="nav-link">LDAP and Open LDAP</a></li>
+          <li><a href="#Useful_Resources" class="nav-link">Useful Resources</a></li>
+        </ul>
+      </nav>
+
+<main id="main-doc">
+<section class="main-section" id="Introduction">
+    <header>Introduction</header><hr>
+    <article><p>Welcome to my technical Wiki. Initially built as a challenge part of freeCodeCamp Responsive Web Design lesson,
+        it is my goto memo / knowledge base.<br>
+        On this home page you will find a summary of every section covered. For instance, some of the covered topics are:<br>
+        <ul>
+            <li>Docker management command lines</li>
+            <li>Notes on Bash and shell scripting</li>
+            <li>Memo on commonly used Linux and Unix standard tools</li>
+            <li>Reminders on Git and GitHub commands</li>
+            <li>Basics in database administration like SQL or Influx commands.</li>
+        </ul>
+        You can view the full pages content by clicking on the "Read more" link in every section.</p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Bash_and_Shellscript">
+    <header>Bash and Shellscript</header><hr>
+    <article>
+        <p>This page covers the basics of Bash and shell scripting on Linux / Unix systems.<br>
+            Some of the subjects treated are loops, arguments, standard flows or colors in Bash. Example:
+            <code>for i in $(cmd); do cmd $i; done</code>
+            <code>for i in $(docker images | awk '{print $3}' | grep -v IMAGE); do echo $i; done</code></p>
+            <p><a class="read-more-button" href="bash.html" title="Bash and Shellscripts">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Linux_and_Unix_Tools">
+    <header>Linux and Unix Tools</header><hr>
+    <article>
+        <p>Memo about mostly standard Linux and Unix tools commonly used in system administration. Example
+            <code>sed, echo, cut, grep, find, set, awk, rename, shred, rsync, rclone, etc..</code>
+        </p>
+        <p><a class="read-more-button" href="linuxtools.html" title="Linux and Unix Tools">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Vi_Basics">
+    <header>Vi Basics</header><hr>
+    <article><p>A few useful commands for Vi text editor.<br>
+        Replace a string in a file:
+    <code>:i,$ s/string-to-replace/string-used-for-replacement</code>
+        Useful Vi shortcuts:
+    <code>ctrl+V = edit a block
+    ctrl+A = increase an occurency by +1
+    ctrl+X = decrease an occurency by -1
+    G goto EOF
+    g goto BOF
+    O addline above
+    o addline below
+    / = search
+    esc+U = ctrl+Z
+    d deletes a line
+    d+$ deletes a line until its end</code>
+    </p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Useful_Commands">
+    <header>Useful Commands</header><hr>
+    <article>
+        <p>This page regroups some miscallenous and useful commands for Linux / Unix systems, like network, monitoring,
+            process management or system command lines. For example: watching established connexions between two hosts:<br>
+            <code>watch -d -n 3 "netstat -ap | grep `hostname`:4444[1-4] | grep ESTABLISHED"</code>
+            Watching a reverse proxy access_log, counting requests:
+            <code>cd /logs &&  for s in `ls -lrt *_access_log | grep " $(date "+%b %d")" | grep -v servername| awk '{print $9}'`; do flog $s; done</code>
+        </p>
+        <p><a class="read-more-button" href="usefulcommands.html" title="Useful Commands">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="SSH,_PTS_and_TTY">
+    <header>SSH, PTS and TTY</header><hr>
+    <article><p>Difference between Shell, Console and Terminal:<br>
+            The terminal connects to the console where the shell is presented.<br>
+            A TTY is a teletypewriter. It is essentially the equivalent of the console port but is often virtualized in software. 
+            If you jump to a different virtual console on your Linux machine using ctrl+alt+f1 to 12 combination and login in, 
+            you can see the multiple consoles with logged in users by running the who command.<br>
+            Then there are PTS devices which are Pseudo Terminal Slaves, a virtual device of sorts.
+            They are a form of TTY, but one that is emulated to allow a TTY connection over a network or some other means. 
+            SSH and Telnet are good examples of programs that use PTS devices.</p>
+            <p><a class="read-more-button" href="ssh-pts-tty.html" title="SSH, PTS and TTY">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Iptables_and_Network_Management">
+    <header>Iptables and Network Management</header><hr>
+    <article><p>This is a collection of the commands I use all the time to manage firewalls and network on servers.</p>
+        <p><a class="read-more-button" href="iptables-and-network-management.html" 
+        title="Iptables and Network Management">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Common_SQL_Commands">
+    <header>Common SQL Commands</header><hr>
+    <article><p>I'm always looking for my SQL most frequently used commands. I compiled them in this page, and added a few interesting things when
+        managing SQL servers or SQL like databases like InfluxDB for instance.</p>
+        <p><a class="read-more-button" href="common-sql-commands.html" title="Common SQL Commands">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="SSL_Tips_and_Tricks">
+    <header>SSL Tips and Tricks</header><hr>
+    <article><p>This section regroups CLI commands for Openssl like how to generate a strong Diffie-Hellman private key, 
+        connecting SSL Client to a server in debug mode and getting certificate and encryption information or applying HTTPS-HSTS configuration to nginx.</p>
+        <p><a class="read-more-button" href="ssl-tips-and-tricks.html" title="SSL Tips and Tricks">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Docker_Commands">
+    <header>Docker Commands</header><hr>
+    <article><p>I followed two trainings on Docker administration and advanced administration, these are my notes and memo on the topic</p>
+        <p><a class="read-more-button" href="docker-administration.html" title="Docker Administration">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Git_and_GitHub_Memo">
+    <header>Git and GitHub Memo</header><hr>
+    <article><p>A handy reminder of the Git most basics (and less too) like how to clean up folders both on local and remote branch...</p>
+        <p><a class="read-more-button" href="git-and-guthub-memo.html" title="Git and GitHub Memo">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Go_(Golang)">
+    <header>Go (Golang)</header><hr>
+    <article><p>Right now I am actively following a few different coding lessons like freeCodeCamp for Web development certifications, two courses about Python 
+        on StackSkills and Coursera, mostly for simple system programming now, but I intent to use it for Web application backend development too.<br> 
+        And I am still in the process of going through this great cursus on Google's Go language by 
+        <a href="https://www.udemy.com/course/learn-how-to-code/#instructor-1" target="_blank" title="Todd McLeod's instructor profile on Udemy">Todd McLeod</a>.<br>
+        I can only recommend it so much, this guy is awesome and a very good instructor! This page resumes my notes of the begining of his class.</p>
+    <p><a class="read-more-button" href="go-golang.html" title="Go (Golang)">Read more</a></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="Useful_Resources">
+    <header>Useful Resources</header><hr>
+    <article>
+            <p><ul><li> <a href="http://resources.infosecinstitute.com/free-detection-tools/">Free Detection Tools (infosecinstitute.com)</a></li>
+                   <li> <a href="https://doc.ubuntu-fr.org/screen">Screen Documentation (ubuntu-fr.org)</a></li>
+                   <li> <a href="https://www.tecmint.com/screen-command-examples-to-manage-linux-terminals/">Screen How To Manage Terminals [tecmint.com)</a></li>
+                   <li> <a href="https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script">Prompt for User Input in a Shell Script (stackoverflow.com)</a></li>
+                   <li> <a href="https://www.cyberciti.biz/faq/unix-linux-bash-history-display-date-time/">Bash History display Date &amp; Time for each Commandes (Nixcraft)</a></li>
+                   <li> <a href="https://fr.wikipedia.org/wiki/Liste_des_codes_HTTP">Liste des codes HTTP (Wikipedia)</a></li>
+                   <li> <a href="https://korben.info/wring-extraire-donnees-presentes-pages-web-ligne-de-commande.html">Wring Extraction de donnée dans des pages Web en ligne de commande (korben.info)</a></li>
+                   <li> <a href="https://github.com/jarun/googler#installing-from-this-repository">Search Google from Linux Terminal (googler)</a></li>
+                   <li> <a href="https://twitter.com/i/moments/1004697240013889536">Nginx Tips (on Twitter)</a></li>
+            </ul></p><hr>
+    </article>
+</section>
+
+<section class="main-section" id="LDAP_and_Open_LDAP_Management_and_Administration">
+<header>LDAP and Open LDAP Management and Administration</header><hr>
+<article><p>LDAP search:<br>
+<code>ldapsearch -D "cn=LDAP DIRECTORY SERVER" -w PASSWD -v -p PORT -b "ou=O_UNIT" "cn=CANON_NAME"
+ldapsearch -D "cn=LDAP DIRECTORY SERVER" -w PASSWD -v -p PORT -b "o=ORGANISATION" "cn=CANON_NAME CANONICAL NAMES"
+</code>
+<code>EXAMPLE ==> WHAT we search ==> (cn=CANON_NAME*) IE: (cn=CODE APPNAME SHORTCODE) CANON_NAME CANONICAL NAMES
+EXAMPLE ==> WHERE we search ==>  o=ORGANISATION,ou=ORGANISATIONAL_UNIT
+</code>
+</p>
+<p><a class="read-more-button" href="#LDAP_and_Open_LDAP_Management_and_Administration" title="LDAP and Open LDAP Management and Administration">Read more</a> 
+    (The rest of this information is password protected.)</p>
+</article>
+</section>
+<footer id="footer">&copy; 2019 All Rights Reserved <a href="https://tsimon.me" alt="Thomas Simon Professional Website" title="tsimon.me">Thomas Simon</a> -
+        <a href="https://github.com/t0m-a" target="_blank" title="t0m-a on GitHub">GitHub</a> - 
+        <a href="https://hub.docker.com/u/simonthomas/" target="_blank" title="Thomas Simon repositories on Docker Hub">Docker Hub</a> - 
+        <a href="https://www.facebook.com/tsim0n" target="_blank" title="Thomas Simon on Facebook">Facebook</a> - 
+        <a href="https://www.linkedin.com/in/thomas-simon-bolivie/?locale=en_US" target="_blank" title="Professional Profile of Thomas Simon on LinkedIn">LinkedIn</a> - 
+        <a href="https://twitter.com/7ohms" target="_blank" title="Twitter, where I talk the most">Twitter</a>
+</footer>
+</main>
+</body>
+</html>

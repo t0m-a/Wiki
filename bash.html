@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Wiki - Bash & Shellscript</title>  
+    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">  
+    <meta charset="UTF-8">
+    <meta name="description" content="Wiki Technical Documentation">
+    <meta name="keywords" content="linux system administration,unix system administration,linux sysadmin,unix sysadmin,wiki linux, 
+    linux technical documentation,sed,cut,awk,find,ssh,pts,tty,iptables,docker,sql,git,github,go,golang,go golang,ssl,openssl,network,
+    linux network,network management,linux network management,vi text editor,vi how to quit,text editor,ide,linux ide,linux resources,bash,
+    shellscript,bash shellscript,shell scripting,loop,bash loop,colors in bash,color in bash,bash color,bash colors">
+    <meta name="author" content="Thomas Simon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<nav id="navbar">
+        <header class="header-title">Technical Documentation</header>
+        <ul>
+          <li><a href="index.html#Introduction" class="nav-link" >Introduction</a></li>
+          <li><a href="bash.html#Bash_and_Shellscript" class="nav-link">Bash and Shellscript</a></li>
+          <li><a href="linuxtools.html#Linux_and_Unix_Tools" class="nav-link">Linux and Unix Tools</a></li>
+          <li><a href="index.html#Vi_Basics" class="nav-link">Vi Basics</a></li>
+          <li><a href="usefulcommands.html#Useful_Commands" class="nav-link">Useful Commands</a></li>
+          <li><a href="ssh-pts-tty.html#SSH,_PTS_and_TTY" class="nav-link">SSH, PTS and TTY</a></li>
+          <li><a href="iptables-and-network-management.html#Iptables_and_Network_Management" class="nav-link">Iptables and Network</a></li>
+          <li><a href="common-sql-commands.html#Common_SQL_Commands" class="nav-link">Common SQL Commands</a></li>
+          <li><a href="ssl-tips-and-tricks.html#SSL_Tips_and_Tricks" class="nav-link">SSL Tips and Tricks</a></li>
+          <li><a href="docker-administration.html#Docker_Commands" class="nav-link">Docker Commands</a></li>
+          <li><a href="git-and-guthub-memo.html#Git_and_GitHub_Memo" class="nav-link">Git and GitHub Memo</a></li>
+          <li><a href="go-golang.html#Go_(Golang)" class="nav-link">Go (Golang)</a></li>
+          <li><a href="index.html#LDAP_and_Open_LDAP_Management_and_Administration" class="nav-link">LDAP and Open LDAP</a></li>
+          <li><a href="index.html#Useful_Resources" class="nav-link">Useful Resources</a></li>
+        </ul>
+      </nav>
+
+<main id="main-doc">
+<section class="main-section" id="Bash_and_Shellscript">
+    <header>Bash and shellscript page index</header>
+    <article>This is the current content sections of the page: <a href="#for">The For Loop</a>, <a href="#colors">Colors in Bash</a>,
+       <a href="#outputs">Bash Inputs & Outputs</a>, <a href="#args">Scripts Arguments</a>, <a href="#misc">Miscallenous</a>
+    </article>
+</section>   
+<section class="main-section" id="for">
+    <header>Bash the <i>for</i> loop</header><hr>
+    <article>
+    <h1>Simple usage:</h1>
+    <p>Example:<br/>
+    <code>for i in $(cmd); do cmd $i; done</code>
+    Example 2:<br/>
+    <code>TEST="1 2 3"
+for i in $TEST;do echo $i;done
+1
+2
+3</code>
+    Then with double quotes:<br/>
+    <code>for i in "$TEST";do echo $i;done
+1 2 3</code></p>
+    <h1>A for loop used with a docker example:</h1>
+    <p><code>docker images 
+REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
+php                     fpm                 0a757334c1f6        12 days ago         368MB
+mariadb                 latest              4828ff028cad        12 days ago         401MB
+phpmyadmin/phpmyadmin   latest              4bdc31ab2ded        13 days ago         164MB
+owncloud/server         10.0                06205d21154b        2 weeks ago         782MB
+redis                   latest              bfcb1f6df2db        5 weeks ago         107MB
+nginx                   latest              ae513a47849c        5 weeks ago         109MB
+debian                  latest              8626492fecd3        5 weeks ago         101MB
+ubuntu                  latest              452a96d81c30        5 weeks ago         79.6MB
+webhippie/mariadb       latest              ca4fdebdc099        8 weeks ago         202MB
+webhippie/redis         latest              906a93578062        2 months ago        55MB</code>
+    Now with a for loop:<br/>
+    <code>for i in $(docker images | awk '{print $3}' | grep -v IMAGE); do echo $i; done</code>
+    Shows:<br/>
+    <code>0a757334c1f6
+4828ff028cad
+4bdc31ab2ded
+06205d21154b
+bfcb1f6df2db
+ae513a47849c
+8626492fecd3
+452a96d81c30
+ca4fdebdc099
+906a93578062</code>
+    In a text file, that we'll remove:<br/>
+    <code>for i in $(docker images | awk '{print $3}' | grep -v IMAGE); do echo $i > inTextFile.txt \
+&& cat inTextFile.txt && rm -f inTextFile.txt; done</code></p>
+    <h1>Manage Servers with a for loop</h1>
+    <p>Below we'll update remote host files with name servers mapped to LAN IP addresses and ping them:<br/>
+    <code>for s in $(cat servers_list | grep servers_codefix);do ssh $s 'cat /root/servers_list >> \
+/etc/hosts && export servers=$(cat /etc/hosts | grep 192 | cut -c1-15) && ping -c 2 $servers';done</code>
+    Below we'll manage Web services with a for loop:<br/>
+    <code>services='apache2 nginx'(<= First the back end server and then the front end server)</code>
+    <code>for services in $services; do /etc/init.d/$services start|stop|status|reload; done</code>
+    Below we'll look into a servers list and add to each of their root account a file named env_vars containing their IP addresses:<br/>
+    <code>for s in $(cat servers_list); do ssh $s 'echo "export eth=$(ifconfig | \
+grep -i "inet addr:" | cut -c21-31 | grep -v "127.0.0.1")" >> /root/env_vars';done</code></p>
+    <h1>Manage data with a for loop</h1>
+    <p>Display all IP addresses resulted by an ifconfig command:<br/>
+    <code>for i in $(ifconfig | grep -i "inet addr:" | awk '{print $2}' | cut -d: -f2); do echo $i;done</code>
+    Manage specific files copy with a loop:<br/>
+    <code>for f in $(ls filename[0-9]); do cp $f /dir; done (or) do cp $(f)_$DATE; other_command; another_one; etc; done</code></p>
+    <h1>My loops</h1>
+    <p>A loop to install a Docker Compose configuration file hosted in an AWS S3 bucket on every host in the cluster:</p>
+    <code>for s in $(cat servers-cluster);do ssh -i PRIVATE_KEY_FILE USER_NAME@$s \
+'sudo aws s3 cp s3://S3_BUCKET_NAME/SUB_DIR/DOCKER_FILE.conf /root/SUB_DIR/DOCKER_FILE.conf/';done</code>
+    <p>This loops lanches docker-compose on every host in the cluster:</p>
+    <code>for s in $(cat servers-cluster);do ssh -i PRIVATE_KEY_FILE USER_NAME@$s \
+"sudo su -c 'cd /root/SUB_DIR && docker-compose down && docker-compose up -d'";done</code>
+    <p>The two loops below add a fail2ban rule based on the HTTP logs:</p>
+    <code>for s in $(cat /logs/main_access.log |grep -i 401 |grep -v Pingdom | cut -f 1 -d ''-''); \
+do fail2ban-client set wordcodess banip $s;done</code>
+    <code>for s in $(cat /logs/main_access.log |grep POST |grep -v Pingdom | grep -v ciro | cut -f 1 -d ''-''); \
+do fail2ban-client set wordcodess banip $s;done</code>
+    <p>HTTP logs manipulation:</p>
+    <code>cat /logs/main_access.log |grep -i 401 | grep -v pingdom | cut -f 1 -d ''-''
+cat main_access.log |grep POST |grep -v ciro | grep -v pingdom | cut -f 1 -d ''-''
+    </code>  
+  </article>
+</section>
+<section class="main-section" id="colors">
+<header>Colors in Bash</header><hr>
+<article>
+    <p>The sequence below trigger color usage in Bash:<br>
+      <code>\033[XXm</code>
+      Where <b>XX</b> is the code for a chosen color. The color code <b>0</b> reset to default values.<br>
+      Font code with background:<br>
+      <code>echo -e "\033[45mHello world on pink background\033[0m"
+      </code>
+      Stacking color codes:<br>
+      <code>echo -e "\033[34m\033[45mBlue Hello world on pink background\033[0m"</code>
+      Stacking color codes does not require to use <b>\033[</b> sequence for each color.<br>
+      Codes can be added to the sequence using <b>;</b> in a single sequence. Bold, underlined, red, blinking text can be written like this:<br>
+      <code>echo -e "\033[31m\033[1m\033[4m\033[5m\033[7mThe Text\033[0m"</code>
+      Or:<br>
+      <code>echo -e "\033[31;1;4;5;7mThe Text\033[0m"</code>
+      Bold code <b>1</b>, underlined <b>4</b>, blinking <b>5</b> overlined <b>7</b>:
+      <code>echo -e "\033[34mBlue, \033[1mBold, \033[4mUnderlined,  \033[5mBlinking \033[7mAnd striked through\033[0m"</code></p>
+      <p>Summary of formating codes: Thirties (30, 31, 32, etc) are for text color. Values in the fourties are for background color (40, 41, 42, etc).<br>
+      the main availables colors are:<br>
+      <code>30, 40 : black ;
+31, 41 : red ;
+32, 42 : green ;
+33, 43 : yellow ;
+34, 44 : blue ;
+35, 45 : pynk ;
+36, 46 : cyan ;
+37, 47 : grey.</code>
+      The first tenth codes are reserved for text formating:<br>
+      <code>0 : reset to default values ;
+1 : bold ;
+4 : underlined ;
+5 : blinking ;
+7 : overlined.</code></p>
+</article>
+</section>
+<section class="main-section" id="outputs">
+    <header>Shell Standard Outputs in Bash</header><hr>
+    <article><h1>The three standards streams</h1>
+        <code>STDIN  = 0
+STDOUT = 1
+STDERR = 2</code>
+            <p><b>2>&1</b> = redirect STDERR to STDOUT<br>
+            <b>2>/dev/null</b> = redirect STDERR to void<br>
+            <b>1>/dev/null</b> = redirect STDOUT to void</p>
+            <p>Any process has three standard streams: one IN (like the keyboard) and two OUT (standard OUT and error OUT being commonly the screen or a file).<br> 
+            These three streams are represented by these three constants: STDIN, STDOUT and STDERR of which values are respectively 0, 1 and 2.</p>
+            <p>Redirect STDOUT to <b>/dev/null</b> with <b>></b> will only apply to STDOUT, not STDERR.<br>Messages sent to STDERR will show on screen, 
+              or in a log file depending on the standard output used in the script).</p>
+            <p>With <b>2>/dev/null</b> we'll redirect only STDERR.<br>With <b>2>&1</b> we'll say "redirect STDERR where STDOUT" is redirected (the "1").<br>
+            If STDOUT is previously redirected to <b>/dev/null</b>, then STDERR will be too.<br>If NOT, STDERR will be displayed on screen or written in the file 
+            which the stream is redirected to.</p>
+            <p>Translated and adapted from: <a href="http://www.lanterne-rouge.info/article-que-signifie-dev-null-2-1-70233357.html" 
+              target="_blank">lanterne-rouge.info</a> (Fr)</p><br>
+    </article>
+    </section>
+<section class="main-section" id="args">
+  <header>Passing arguments to a shell script in Bash</header><hr>
+  <article>
+      <p><code>debug script -x</code>
+        Equals <b>-v</b> but <b>-x</b> is more verbose, useful for debuging.</p>
+        <h1>Shell script ARGS</h1>
+        <p><code>$0</code> Name of the script itself, used for the "usage" declaration or the script help.<br>
+        <code>$(basename $0)</code>
+        Used to display only the name and not the full absolute path, or </b>`basename $0`</b>.<br>
+        <code>$1</code>
+        Positionnal argument, it's the first argument given to the script after its name in the prompt.<br> 
+        <code>${10}</code>
+        If two or more digits are necessary to declare the argument. <b>{argument's value}</b>.<br>
+        Two digits with a declared value are expected.<br>
+        <code>$#</code>
+        Argument counter. Useful if we are expecting a precise number of options passed to the script in order for it to execute properly.<br>
+        Argument counter is used to define this number of required mandatory options.<br>
+        <code>$*</code>
+        Refers to all the arguments added after the script name without a limit number.<br>
+        <b>Simple quotes protects the whole expression from being interpreted</b> by the BASH interpreter including the variable declaration sign <b>$</b> and its content.<br>
+        <code>echo '$1' = $1</code>
+        whereas: <code>echo "$1" = echo the content of $1</code>
+        <b>\</b> is used to escape from a protection, I.E.:<br>
+        <code>"$USER text \$4" = Content of the variable $USER text $4</code>
+        <code>exit 0</code>
+        Mandatory in the end of a script, used to check on the script exit.<br>
+        <code>0 = Exit without error</code>
+        <code>1 = Exit with error</code>
+        </p><hr>
+  </article>
+</section>
+<section id="misc">
+  <header>Miscellaneous shell Tips & Infos</header><hr>
+  <article>
+      <h1>Word Count</h1>
+  <code>wc -l, --lines ==> print the newline counts
+wc -L, --max-line-length ==> print the maximum display width
+wc -w ==> prints the words count</code>
+      <h1>Commands operators</h1>
+      <code>&& Launch the second command <b>if the first exit successfully</b> 
+|| Launch the second command <b>if the first exit on error</b></code>
+      <h1>Date(s) in Bash</h1>
+      To use date in a shell script:<br>
+      <code>`date +$Y$m$d$H$M`</code>
+      Defining Date as a variable to use it in a shell script:<br>
+      <code>myDateVar=$(date +%Y%m%d%H%M)</code>
+      <code>echo $myDateVar returns 201703251313</code>
+      <h3>PS - Process Management Commands</h3>
+      <code>ps -ef | grep -i "pid" | grep -i "une date type Feb10" | awk `{print $2}` | xargs (example xargs kill -9)</code> 
+      <code>ps -aef or -ef</code> 
+      <code>ps aux</code>
+      <p><b>-e</b> or <b>-A</b> lists all active processes.<br>
+      <b>-au</b> or <b>-aux</b> list all processes in the BSD format.<br>
+      <b>-ef</b> or <b>-eF</b> list all processes in wide format lines.<br>
+      <b>-x</b> list running processes.<br>
+      More on processes management in command line: <a href="https://www.tecmint.com/ps-command-examples-for-linux-process-monitoring/" target="_blank">tecmint.com</a>.
+      <h1>WSL Bash for Windows Backup</h1>
+      <code>## Backup LXSS
+#! /bin/bash
+# tarlxss.sh
+# script to back up lxss local directories
+
+export myDate=`exec date '+%Y%m%d'`
+
+# change this line!!! Probably should be someplace in DrvFS (/mnt/...)
+export backdir=/mnt/appropriate/backup/path
+
+# this next line is quite long, make sure it doesn't "wrap"
+export TARCMD="/bin/tar --verbose --create --one-file-system --xz --exclude=./var/run --index-file=${backdir}/local-${myDate}.log --file \
+${backdir}/local-${myDate}.tar.xz "
+#
+export XZCMD="/usr/bin/xz"
+
+# /etc contains some things worth keeping, like modified config files and 
+# sshd certificates, so it might be good to add ./etc/ssh (or just ./etc) to the backup
+# the first thing after $TARCMD (below) must be the list of dirs to back up
+# start in the root of the filesystem
+cd /
+$TARCMD  ./home ./root ./usr/local 
+tarreturn=$?
+echo $0: finished, returned $tarreturn >> ${backdir}/local-${myDate}.log
+$XZCMD ${backdir}/local-${myDate}.log
+xzreturn=$?
+echo $0: finished normally, tar with $tarreturn, xz with $xzreturn 
+
+#===================================================================================
+# You can run it daily (for example) from Task Scheduler. Under "Actions" put:
+# Action: Start a program
+# Program/Script: c:\windows\system32\bash.exe
+# Add arguments (optional): -c 'sudo /path/to/tarlxss.sh'
+#===================================================================================</code></p>
+
+<h1>VMware Batch</h1>
+      <p>VMware Autolaunch VMs .bat Put in a BATCH file in start menu folder:<br>
+      <code>cd "\Program Files\VMware\VMware Workstation"
+vmware -x "C:\My virtual machine\winxppro.vmx"</code>
+      Or:<code>"C:\Program Files (x86)\VMware\VMware Workstation\vmware.exe" -X "Z:\Virtual Machines\XP_Dev\winXPPro.vmx"</code></p>
+  </article>
+</section>
+<footer id="footer">&copy; 2019 All Rights Reserved <a href="https://tsimon.me" alt="Thomas Simon Professional Website" title="tsimon.me">Thomas Simon</a> -
+        <a href="https://github.com/t0m-a" target="_blank" title="t0m-a on GitHub">GitHub</a> - 
+        <a href="https://hub.docker.com/u/simonthomas/" target="_blank" title="Thomas Simon repositories on Docker Hub">Docker Hub</a> - 
+        <a href="https://www.facebook.com/tsim0n" target="_blank" title="Thomas Simon on Facebook">Facebook</a> - 
+        <a href="https://www.linkedin.com/in/thomas-simon-bolivie/?locale=en_US" target="_blank" title="Professional Profile of Thomas Simon on LinkedIn">LinkedIn</a> - 
+        <a href="https://twitter.com/7ohms" target="_blank" title="Twitter, where I talk the most">Twitter</a>
+</footer>
+</main>    
+</body>
+</html>

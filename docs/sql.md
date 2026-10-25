@@ -1,6 +1,6 @@
 # Common SQL & MySQL Commands
 
-> [← Back to Main Index](../README.md)
+> [← Back to Main Index](README.md)
 
 ## Table of Contents
 

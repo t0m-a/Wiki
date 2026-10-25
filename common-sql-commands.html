@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Wiki - Common SQL Commands</title>
+    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">
+    <meta charset="UTF-8">
+    <meta name="description" content="Wiki Technical Documentation">
+    <meta name="keywords" content="linux system administration,unix system administration,linux sysadmin,unix sysadmin,wiki linux,
+    linux technical documentation,sed,cut,awk,find,ssh,pts,tty,iptables,docker,sql,git,github,go,golang,go golang,ssl,openssl,network,
+    linux network,network management,linux network management,vi text editor,vi how to quit,text editor,ide,linux ide,linux resources,bash,
+    shellscript,bash shellscript,shell scripting,loop,bash loop,colors in bash,color in bash,bash color,bash colors">
+    <meta name="author" content="Thomas Simon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<nav id="navbar">
+        <header class="header-title">Technical Documentation</header>
+        <ul>
+          <li><a href="index.html#Introduction" class="nav-link" >Introduction</a></li>
+          <li><a href="bash.html#Bash_and_Shellscript" class="nav-link">Bash and Shellscript</a></li>
+          <li><a href="linuxtools.html#Linux_and_Unix_Tools" class="nav-link">Linux and Unix Tools</a></li>
+          <li><a href="index.html#Vi_Basics" class="nav-link">Vi Basics</a></li>
+          <li><a href="usefulcommands.html#Useful_Commands" class="nav-link">Useful Commands</a></li>
+          <li><a href="ssh-pts-tty.html#SSH,_PTS_and_TTY" class="nav-link">SSH, PTS and TTY</a></li>
+          <li><a href="iptables-and-network-management.html#Iptables_and_Network_Management" class="nav-link">Iptables and Network</a></li>
+          <li><a href="common-sql-commands.html#Common_SQL_Commands" class="nav-link">Common SQL Commands</a></li>
+          <li><a href="ssl-tips-and-tricks.html#SSL_Tips_and_Tricks" class="nav-link">SSL Tips and Tricks</a></li>
+          <li><a href="docker-administration.html#Docker_Commands" class="nav-link">Docker Commands</a></li>
+          <li><a href="git-and-guthub-memo.html#Git_and_GitHub_Memo" class="nav-link">Git and GitHub Memo</a></li>
+          <li><a href="go-golang.html#Go_(Golang)" class="nav-link">Go (Golang)</a></li>
+          <li><a href="index.html#LDAP_and_Open_LDAP_Management_and_Administration" class="nav-link">LDAP and Open LDAP</a></li>
+          <li><a href="index.html#Useful_Resources" class="nav-link">Useful Resources</a></li>
+        </ul>
+      </nav>
+
+<main id="main-doc">
+<section class="main-section" id="Common_SQL_Commands">
+    <header>SQL / MySQL Common Commands</header><hr>
+    <article><p>This page will soon get a much more updates as I learnt some more syntax commands and queries.<br>
+    I also use InfluxDB databases of which query syntax and commands are very similar to SQL. No, really
+    they are almost exactly the same, I like it!<br>Note to self, I may need to rename and reorganize this page to cover more databases
+    systems than just SQL, as I remember that I also work with some MongoDB for my Python coding...</p>
+    <h1>SQL Management Command Lines</h1>
+            <p>Connect to an SQL server:<br>
+                <code>mysql -h localhost -u USER_NAME -p (PASSWORD_WILL_BE_PROMPTED)</code>
+                Show SQL server status:<br>
+                <code>show status;</code>
+                Show SQL DB(s):<br>
+                <code>show databases;</code>
+                Show a DB's tables (Have to select a DB with use DB_NAME; ie: use MYSQL;):<br>
+                <code>use MYSQL;	
+show tables;</code>
+                Show FIELDS in a table:<br>
+                <code>describe TABLE_NAME; (i.e: describe USER; )</code>
+Show SQL users:<br>
+                <code>select user from mysql.user;</code>
+                Update a user's password:<br>
+                <code>update user set authentication_string=PASSWORD("NewPassword") where User='UserName'; </code>
+                Or::<br>
+                <code>SET authentication_string FOR 'UserName'@'localhost' = PASSWORD('NewPassword');</code>
+                Create and Manage user:<br>
+                Source: <a href="https://dev.mysql.com/doc/refman/5.7/en/grant.html">dev.mysql.com</a><br>
+                <code>CREATE USER 'UserName'@'localhost' IDENTIFIED BY 'mypass'; 
+GRANT ALL ON db1.* TO 'UserName'@'localhost';
+GRANT SELECT ON db2.invoice TO 'UserName'@'localhost';
+ALTER USER 'UserName'@'localhost' WITH MAX_QUERIES_PER_HOUR 90;</code>
+                </p>
+                <p>More useful basics at: <a href="https://www.freecodecamp.org/news/basic-sql-commands/" 
+                  target="_blank">freecodecamp.org/news/basic-sql-commands/</a><br>I'll try to add them here as I use them, as soon as I have the time.</p>
+                <p>SQL Dump All Databases for Backup (Export):<br/>
+                <code>mysqldump --all-databases > dump-$( date '+%Y-%m-%d_%H-%M-%S' ).sql -u root -p</code>
+                SQL Import a Backup:<br/>
+                <code>CREATE DATABASE new_database;
+mysql -u username -p new_database < data-dump.sql</code>
+                Verify an SQL Dump:<br/>
+                <code>head -n 5 data-dump.sql
+tail -n 5 data-dump.sql</code>
+                Backup with no access to the SQL Server itself (still need to be root):<br/>
+                <code>/etc/init.d/mysql stop
+mkdir -p /opt/database/backup-$(DATE -I)/
+cp -R /var/lib/mysql/* /opt/database/backup-$(DATE -I)/
+cd /opt/database/backup-$(DATE -I)
+tar -czfv * > /opt/mysqlBackup-$(DATE -I).tar.gz
+/etc/init.d/mysql start</code></p>
+    </article>
+</section>
+<footer id="footer">&copy; 2019 All Rights Reserved <a href="https://tsimon.me" alt="Thomas Simon Professional Website" title="tsimon.me">Thomas Simon</a> -
+        <a href="https://github.com/t0m-a" target="_blank" title="t0m-a on GitHub">GitHub</a> - 
+        <a href="https://hub.docker.com/u/simonthomas/" target="_blank" title="Thomas Simon repositories on Docker Hub">Docker Hub</a> - 
+        <a href="https://www.facebook.com/tsim0n" target="_blank" title="Thomas Simon on Facebook">Facebook</a> - 
+        <a href="https://www.linkedin.com/in/thomas-simon-bolivie/?locale=en_US" target="_blank" title="Professional Profile of Thomas Simon on LinkedIn">LinkedIn</a> - 
+        <a href="https://twitter.com/7ohms" target="_blank" title="Twitter, where I talk the most">Twitter</a>
+ </footer>
+</main>
+</body>
+</html>

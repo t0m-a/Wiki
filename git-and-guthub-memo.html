@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Git Memo</title>  
+    <LINK REL=StyleSheet HREF="style.css" TYPE="text/css">  
+    <meta charset="UTF-8">
+    <meta name="description" content="Wiki Technical Documentation">
+    <meta name="keywords" content="linux system administration,unix system administration,linux sysadmin,unix sysadmin,wiki linux, 
+    linux technical documentation,sed,cut,awk,find,ssh,pts,tty,iptables,docker,sql,git,github,go,golang,go golang,ssl,openssl,network,
+    linux network,network management,linux network management,vi text editor,vi how to quit,text editor,ide,linux ide,linux resources,bash,
+    shellscript,bash shellscript,shell scripting,loop,bash loop,colors in bash,color in bash,bash color,bash colors">
+    <meta name="author" content="Thomas Simon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<nav id="navbar">
+        <header class="header-title">Technical Documentation</header>
+        <ul>
+          <li><a href="index.html#Introduction" class="nav-link" >Introduction</a></li>
+          <li><a href="bash.html#Bash_and_Shellscript" class="nav-link">Bash and Shellscript</a></li>
+          <li><a href="linuxtools.html#Linux_and_Unix_Tools" class="nav-link">Linux and Unix Tools</a></li>
+          <li><a href="index.html#Vi_Basics" class="nav-link">Vi Basics</a></li>
+          <li><a href="usefulcommands.html#Useful_Commands" class="nav-link">Useful Commands</a></li>
+          <li><a href="ssh-pts-tty.html#SSH,_PTS_and_TTY" class="nav-link">SSH, PTS and TTY</a></li>
+          <li><a href="iptables-and-network-management.html#Iptables_and_Network_Management" class="nav-link">Iptables and Network</a></li>
+          <li><a href="common-sql-commands.html#Common_SQL_Commands" class="nav-link">Common SQL Commands</a></li>
+          <li><a href="ssl-tips-and-tricks.html#SSL_Tips_and_Tricks" class="nav-link">SSL Tips and Tricks</a></li>
+          <li><a href="docker-administration.html#Docker_Commands" class="nav-link">Docker Commands</a></li>
+          <li><a href="git-and-guthub-memo.html#Git_and_GitHub_Memo" class="nav-link">Git and GitHub Memo</a></li>
+          <li><a href="go-golang.html#Go_(Golang)" class="nav-link">Go (Golang)</a></li>
+          <li><a href="index.html#LDAP_and_Open_LDAP_Management_and_Administration" class="nav-link">LDAP and Open LDAP</a></li>
+          <li><a href="index.html#Useful_Resources" class="nav-link">Useful Resources</a></li>
+        </ul>
+      </nav>
+
+<main id="main-doc">
+<section class="main-section" id="Git_and_GitHub_Memo">
+    <header>Git Memo</header><hr>
+    <article><p>This is the current content sections of the page: <a href="#basics">Git Basics</a> + Atom tips</p><hr>
+    </article>
+</section>
+<section class="main-section" id="basics">
+    <header>Git Basics</header><hr>
+    <article>
+            <h1>Usage</h1>
+            <p>The order of operations is:<br>
+            Make your change.<br>
+            <b>git add</b> - this stages your changes for committing<br>
+            <b>git commit</b> - this commits your staged changes locally<br>
+            <b>git push</b> - this pushes your committed changes to a remote<br>
+            If you push without committing, nothing gets pushed. If you commit without adding, nothing gets committed. If you add without committing, nothing at all happens, git merely remembers that the changes you added should be considered for the following commit.<br>
+            The message you're seeing (your branch is ahead by 1 commit) means that your local repository has one commit that hasn't been pushed yet.<br>
+            In other words: add and commit are local operations, push, pull and fetch are operations that interact with a remote.</p>
+            <h1>TO RESET CHANGES</h1>
+            <p><b>git reset --hard HEAD~</b><br>
+            You may want to check to make absolutely sure you want this (git log), because you'll loose all changes.<br>
+            A safer alternative is to run:<br>
+            <b>git reset --soft HEAD~ </b># reset to the last commit<br>
+            <b>git stash</b> # stash all the changes in the working tree<br>
+            <b>git push</b> # push changes<br>
+            <b>git stash pop</b> # get your changes back<br>
+            Or:<br>
+            <b>git pull</b> to download the original repo in its remote current state.<br>
+            <h1>Git Basic Commands</h1>
+            <p>Quick setup — if you’ve done this kind of thing before: Set up in Desktop or HTTPS, SSH.
+            We recommend every repository include a README, LICENSE, and .gitignore. First configuration:<br>
+            <code>git config --global core.editor "vim"
+git config --global credential.helper 'cache --timeout=360000'
+git config --global user.name GithubUserName
+git config --global user.email AccountmailAddress
+Initiate a Repository with Command Line
+echo "#REPOSITORY_NAME" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/GithubUserName/REPOSITORY_NAME.git
+git push -u origin master</code>
+            Or push an existing repository from the command line:<br>
+            <code>git remote add origin https://github.com/GithubUserName/REPOSITORY_NAME.git 
+git push -u origin master</code>
+            Or import code from another repository. You can initialize this repository with code from a Subversion, Mercurial, or TFS project.<br>
+            Github example from address https://github.com/ithubUserName/REPOSITORY_NAME:<br>
+            <code>git config --global credential.helper 'cache --timeout=3600'
+git rm -r --cached REPO_NAME && git commit -m 'Removed old directory "REPO_NAME" ' && git push origin master</code>
+            Git: clean up folders local and remote. From the Repository root directory, run:<br>
+            <code>git filter-branch -f --tree-filter 'rm -rf package_dir/sub_package_dir' HEAD</code>
+            Example:<br>
+            <code>git filter-branch -f --tree-filter 'rm -rf exercices/exercice-php' HEAD</code>
+            <b>-f</b> is to force the command line in case of multiple deletions which require to force the backup branch three to be updated more than once.<br>Then push changes with <b>--force option</b>:<br>
+            <code>git push --force</code></p>
+            <h1>Git VIM Editor + Basic git config --global</h1>
+            <p><code>git config --global core.editor "vim"
+git config --global credential.helper 'cache --timeout=3600'
+git config --global user.name GithubUserName
+git config --global user.email AccountmailAddress</code>
+            Useful Resources and Links<br>
+            <a href="https://git-scm.com/book/fr/v2/Utilitaires-Git-Stockage-des-identifiants" target="_blank">git-scm.com/book/fr/v2/Utilitaires-Git-Stockage-des-identifiants</a>
+            <a href="https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup" target="_blank">git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup</a>
+            </p>
+            <h1>Atom Tips & Tricks</h1>
+            <p>Files Treeview:<br>
+            Git status: orange for modified, green for new, red for deleted.<br>
+            </p>
+            <h1>Create a repository from the command line</h1>
+            <code>touch README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/$USERNAME/$REPO.git
+git push -u origin master
+## Push an existing repository from the command line
+git remote add origin https://github.com/$USERNAME/$REPO.git
+git push -u origin master</code>
+    </article>
+</section>
+<footer id="footer">&copy; 2019 All Rights Reserved <a href="https://tsimon.me" alt="Thomas Simon Professional Website" title="tsimon.me">Thomas Simon</a> -
+        <a href="https://github.com/t0m-a" target="_blank" title="t0m-a on GitHub">GitHub</a> - 
+        <a href="https://hub.docker.com/u/simonthomas/" target="_blank" title="Thomas Simon repositories on Docker Hub">Docker Hub</a> - 
+        <a href="https://www.facebook.com/tsim0n" target="_blank" title="Thomas Simon on Facebook">Facebook</a> - 
+        <a href="https://www.linkedin.com/in/thomas-simon-bolivie/?locale=en_US" target="_blank" title="Professional Profile of Thomas Simon on LinkedIn">LinkedIn</a> - 
+        <a href="https://twitter.com/7ohms" target="_blank" title="Twitter, where I talk the most">Twitter</a>
+ </footer>
+</main>
+</body>
+</html>

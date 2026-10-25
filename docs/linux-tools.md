@@ -1,6 +1,6 @@
 # Linux & Unix Command-Line Tools
 
-> [← Back to Main Index](../README.md)
+> [← Back to Main Index](README.md)
 
 ## Table of Contents
 
