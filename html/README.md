@@ -1,23 +1,21 @@
-<h1>Main Index Page</h1>
-<h2>Content</h2>
-<a href="/bash.html">BASH</a> - Bash shell Tips and Tricks<br/>
-<a href="/linuxtools1.html">LINUX-UNIX-TOOLS</a> - Sed - Echo - Cut - Grep<br/>
-<a href="/linuxtools2.html">LINUX-UNIX-TOOLS-2</a> - Find - Advanced Grep - Cron - Set - Awk<br/>
-<a href="/linuxtools3.html">LINUX-UNIX-TOOLS-3</a> - Rename - Shred - Rclone - Rsync etc...<br/>
-<a href="/vi.html">VI Basics</a> - Vi and Vim Basics<br/>
-<a href="/miscallenous.html">Useful Miscellaneous Commands</a> - Various Useful Commands<br/>
-<a href="/ssh.html">SSH PTS TTY</a> - SSH - SCP / DSH and Terminal Tips & Tricks<br/>
-<a href="/network.html">Iptables and Network</a> - Iptables and Network Management under Linux<br/>
-<a href="/sql.html">Common SQL Commands</a> - Common SQL Administration Commands<br/>
-<a href="/ldap.html">LDAP Open LDAP</a> - LDAP Management and Administration Information<br/>
-<a href="/ssl.html">SSL Tips</a> - HTTPS-HSTS, SSL & Open SSL Tips & Tricks<br/>
-<a href="/docker.html">DOCKER</a> - Docker Commands and Memo Part 1<br/>
-<a href="/go.html">GO-LANG</a> - Google Go (Go-lang): Introduction - Part 1<br/>
-<a href="/git-atom.html">Git and Atom Tips</a> - Git, Github and Atom Editor Tips & Tricks<br/>
-<a href="/resources.html">Useful Resources</a> - Links to useful system and networking resources<br/>
-<a href="/go2.html">Google GO Programming Language (Go Lang)</a> - Google Go (Go-lang) - Part 2<br/>
-<a href="/aws.html">Amazon Web Service</a> - AWS Certified Solutions Architect - Associate - Part 1<br/>
-<a href="/aws2.html">Amazon Web Service</a> - AWS Certified Solutions Architect - Associate - Part 2<br/>
-<a href="/nginx.html">Nginx</a> - Nginx Ninja Tips and Tricks<br/>
-<a href="/do.html">Digital Ocean</a> - Digital Ocean Cloud Tips and Tricks<br/>
-<a href="/script.html">Shell Scripts</a> - Various Shell Scripts + Tips and Tricks <br/>
+# Legacy HTML Wiki Index (`html/`)
+
+> Looking for the formatted Markdown Wiki? See the **[Main Repository README](../README.md)** and the **[`docs/`](../docs/)** directory.
+
+## Content
+
+- **[BASH](bash.html)** ([Markdown](../docs/bash.md)) — Bash shell Tips and Tricks
+- **[LINUX-UNIX-TOOLS](linuxtools1.html)** ([Markdown](../docs/linux-tools.md)) — `sed`, `echo`, `cut`, `grep`
+- **[LINUX-UNIX-TOOLS-2](linuxtools2.html)** ([Markdown](../docs/linux-tools.md)) — `find`, Advanced `grep`, `cron`, `set`, `awk`
+- **[LINUX-UNIX-TOOLS-3](linuxtools3.html)** ([Markdown](../docs/linux-tools.md)) — `rename`, `shred`, `rclone`, `rsync`, etc.
+- **[VI Basics](vi.html)** ([Markdown](../docs/vi-basics.md)) — Vi and Vim Basics
+- **[Useful Miscellaneous Commands](miscallenous.html)** ([Markdown](../docs/useful-commands.md)) — Various Useful Commands
+- **[SSH PTS TTY](ssh.html)** ([Markdown](../docs/ssh-pts-tty.md)) — `ssh`, `scp`, `dsh`, and Terminal Tips & Tricks
+- **[Iptables and Network](network.html)** ([Markdown](../docs/iptables-and-network.md)) — Iptables and Network Management under Linux
+- **[Common SQL Commands](sql.html)** ([Markdown](../docs/sql.md)) — Common SQL Administration Commands & Backup Script
+- **[LDAP OpenLDAP](../docs/ldap-and-resources.md)** — LDAP Management and Administration Information
+- **[SSL Tips](ssl.html)** ([Markdown](../docs/ssl-tips-and-tricks.md)) — HTTPS-HSTS, SSL & OpenSSL Tips & Tricks
+- **[DOCKER](docker.html)** ([Markdown](../docs/docker.md)) — Docker Commands and Memo
+- **[GO-LANG (Part 1)](go.html)** & **[GO-LANG (Part 2)](go2.html)** ([Markdown](../docs/go-golang.md)) — Google Go (Golang) Introduction & Programming Notes
+- **[Git and Atom Tips](git-atom.html)** ([Markdown](../docs/git-and-github.md)) — Git, GitHub, and Atom Editor Tips & Tricks
+- **[Useful Resources](resources.html)** ([Markdown](../docs/ldap-and-resources.md#useful-system-networking--security-resources)) — Links to useful system and networking resources
